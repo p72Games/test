@@ -94,16 +94,6 @@
     color:var(--fg);
     user-select:none;
   }
-  #message{
-    margin-top:10px;
-    color:#fff;
-    background:#022;
-    border:1px solid var(--accent);
-    border-radius:8px;
-    padding:6px 12px;
-    font-size:16px;
-    display:none;
-  }
 </style>
 </head>
 <body>
@@ -121,6 +111,7 @@
       </div>
       <h3>🏆 Leaderboard</h3>
       <ol id="leaderList"></ol>
+      <button class="btn red" onclick="goHome()">🏠 Home</button>
     </div>
 
     <!-- GAME -->
@@ -135,9 +126,9 @@
       </div>
       <div style="margin-top:10px;">
         <button class="btn" onclick="togglePause()">⏸ Pause</button>
-        <button class="btn red" onclick="quitToMenu()">🏠 Home</button>
+        <button class="btn red" onclick="quitToMenu()">Quit</button>
+        <button class="btn" onclick="goHome()">🏠 Home</button>
       </div>
-      <div id="message"></div>
     </div>
   </div>
 
@@ -157,28 +148,19 @@ let canvas=document.getElementById("snakeCanvas");
 let ctx=canvas.getContext("2d");
 let snake, dir, food, score, gameLoop, speed, playerName, paused=false;
 
-function quitToHome(){
-  document.getElementById("menu").classList.remove("active");
-  // If you have a main arcade page, show it here
-  // For now, we'll just reload the page as a simple home
-  location.reload();
-}
-
-     
 function startGame(diff){
   playerName=document.getElementById("playerName").value||"Player";
   snake=[{x:10,y:10}];
   dir={x:1,y:0};
   food=spawnFood();
   score=0;
-  paused=false;
   speed = diff==="easy"?150:diff==="hard"?70:100;
   document.getElementById("score").innerText="Score: 0";
   document.getElementById("menu").classList.remove("active");
   document.getElementById("game").classList.add("active");
   clearInterval(gameLoop);
   gameLoop=setInterval(tick,speed);
-  hideMessage();
+  paused=false;
 }
 
 function tick(){
@@ -190,7 +172,6 @@ function tick(){
   snake.unshift(head);
   if(head.x===food.x&&head.y===food.y){
     score++;
-    showMessage("+1 Point!",1000);
     document.getElementById("score").innerText="Score: "+score;
     food=spawnFood();
   } else snake.pop();
@@ -224,20 +205,22 @@ document.addEventListener("keydown",e=>changeDir(e.key));
 
 function togglePause(){
   paused=!paused;
-  showMessage(paused?"Paused":"Resumed",1000);
 }
 
 function gameOver(){
   clearInterval(gameLoop);
   saveScore(playerName,score);
-  showMessage("Game Over! Score: "+score,2000);
-  setTimeout(quitToMenu,2000);
+  quitToMenu();
 }
 
 function quitToMenu(){
   document.getElementById("game").classList.remove("active");
   document.getElementById("menu").classList.add("active");
   renderLeaderboard();
+}
+
+function goHome(){
+  window.location.href = "index.html";
 }
 
 function saveScore(name,score){
@@ -258,19 +241,7 @@ function renderLeaderboard(){
     list.appendChild(li);
   });
 }
-
-function showMessage(msg,duration=1000){
-  let m=document.getElementById("message");
-  m.innerText=msg;
-  m.style.display="block";
-  clearTimeout(m.timeout);
-  m.timeout=setTimeout(()=>{m.style.display="none"},duration);
-}
-
-function hideMessage(){
-  let m=document.getElementById("message");
-  m.style.display="none";
-}
+renderLeaderboard();
 
 // Mobile swipe support
 let touchStartX=0, touchStartY=0;
@@ -286,24 +257,6 @@ canvas.addEventListener("touchend",e=>{
     if(dy>0) changeDir("ArrowDown"); else changeDir("ArrowUp");
   }
 });
-
-renderLeaderboard();
 </script>
 </body>
 </html>
-
-<!-- MENU -->
-<div id="menu" class="menu active">
-  <p>Enter your name to begin:</p>
-  <input id="playerName" type="text" maxlength="20" placeholder="Name">
-  <div>
-    <button class="btn" onclick="startGame('easy')">Easy</button>
-    <button class="btn" onclick="startGame('normal')">Normal</button>
-    <button class="btn" onclick="startGame('hard')">Hard</button>
-  </div>
-  <div style="margin-top:10px;">
-    <button class="btn red" onclick="quitToHome()">🏠 Home</button>
-  </div>
-  <h3>🏆 Leaderboard</h3>
-  <ol id="leaderList"></ol>
-</div>
