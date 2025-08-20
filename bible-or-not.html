@@ -1,64 +1,188 @@
-import React, { useState } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bible or Not? - Dominion Games</title>
 
-const phrases = [
-  { text: 'The Lord is my shepherd, I shall not want.', isBible: true },
-  { text: 'An apple a day keeps the doctor away.', isBible: false },
-  { text: 'In the beginning God created the heaven and the earth.', isBible: true },
-  { text: 'May the force be with you.', isBible: false },
-  // ... add 300+ phrases here
-];
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248"
+     crossorigin="anonymous"></script>
 
-const getRandomPhrase = () => {
-  const index = Math.floor(Math.random() * phrases.length);
-  return phrases[index];
-};
+<style>
+  :root{
+    --bg:#000;
+    --fg:#00ff88;
+    --accent:#00e5ff;
+    --danger:#ff3366;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
+    color:var(--fg);
+    font-family: "Courier New", monospace;
+    text-align:center;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    padding:10px;
+  }
+  .frame{
+    width:min(900px, 94vw);
+    border:2px solid var(--accent);
+    border-radius:16px;
+    padding:20px;
+    margin-top:10px;
+    background: rgba(0,0,0,.6);
+    box-shadow: 0 0 12px var(--accent), inset 0 0 20px rgba(0,229,255,.2);
+  }
+  h1{
+    margin:0 0 14px;
+    font-size: clamp(26px, 6vw, 40px);
+    color:#a0fff2;
+    text-shadow: 0 0 10px var(--fg), 0 0 24px var(--accent);
+  }
+  .menu, .game{display:none}
+  .menu.active, .game.active{display:block}
+  .btn{
+    background:#031416;
+    color:var(--fg);
+    border:2px solid var(--accent);
+    padding:10px 18px;
+    border-radius:10px;
+    margin:6px;
+    cursor:pointer;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    box-shadow: 0 0 12px rgba(0,229,255,.35);
+  }
+  .btn.red{border-color:var(--danger); color:#ffdbe6;}
+  #score{margin:6px; font-size:20px}
+  #questionBox{
+    font-size:18px;
+    margin:20px auto;
+    max-width:90%;
+  }
+  footer{
+    margin-top:20px;
+    font-size:14px;
+    opacity:.7;
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <h1>Bible or Not?</h1>
 
-export default function BibleOrNot() {
-  const [current, setCurrent] = useState(getRandomPhrase());
-  const [score, setScore] = useState(0);
+    <div id="menu" class="menu active">
+      <p>Enter your name to start:</p>
+      <input id="playerName" type="text" maxlength="20" placeholder="Name">
+      <div>
+        <button class="btn" onclick="startGame()">Start Game</button>
+      </div>
+      <h3>🏆 Leaderboard</h3>
+      <ol id="leaderList"></ol>
+    </div>
 
-  const handleAnswer = (answer) => {
-    if (answer === current.isBible) {
-      setScore(score + 1);
-    }
-    setCurrent(getRandomPhrase());
-  };
-
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-      <h1 className="text-3xl font-bold mb-6">Bible or Not?</h1>
-      <div className="bg-white p-6 rounded-2xl shadow-lg max-w-xl text-center">
-        <p className="text-xl mb-6">{current.text}</p>
-        <div className="flex justify-around mb-4">
-          <button
-            className="bg-green-500 text-white px-6 py-2 rounded-xl hover:bg-green-600"
-            onClick={() => handleAnswer(true)}
-          >
-            Bible
-          </button>
-          <button
-            className="bg-red-500 text-white px-6 py-2 rounded-xl hover:bg-red-600"
-            onClick={() => handleAnswer(false)}
-          >
-            Not
-          </button>
-        </div>
-        <p className="mb-4">Score: {score}</p>
-        <div className="flex justify-between">
-          <button
-            className="bg-gray-500 text-white px-4 py-2 rounded-xl hover:bg-gray-600"
-            onClick={() => window.location.href = '/'}
-          >
-            Home
-          </button>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600"
-            onClick={() => alert(`Final Score: ${score}`)}
-          >
-            Submit Score
-          </button>
-        </div>
+    <div id="game" class="game">
+      <div id="score">Score: 0</div>
+      <div id="questionBox">Question appears here</div>
+      <div>
+        <button class="btn" onclick="answer(true)">Bible ✅</button>
+        <button class="btn red" onclick="answer(false)">Not ❌</button>
+      </div>
+      <div>
+        <button class="btn" onclick="submitScore()">Submit Score</button>
+        <button class="btn" onclick="goHome()">Home</button>
       </div>
     </div>
-  );
+  </div>
+
+  <!-- AdSense placeholder -->
+  <ins class="adsbygoogle"
+      style="display:block; margin:20px auto;"
+      data-ad-client="ca-pub-7172412535146248"
+      data-ad-slot="1234567890"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+  <footer>© Dominion Games</footer>
+
+<script>
+let playerName, score, questionIndex;
+let questions = [
+  {text:"In the beginning God created the heavens and the earth.", bible:true},
+  {text:"The sky is green with orange polka dots.", bible:false},
+  {text:"Moses parted the Red Sea.", bible:true},
+  {text:"Elijah rode a unicorn into battle.", bible:false},
+  {text:"Love your neighbor as yourself.", bible:true},
+  {text:"The moon is made of cheese.", bible:false},
+  {text:"Jesus fed 5,000 people with five loaves and two fish.", bible:true},
+  {text:"Noah's Ark held 50 animals of each species.", bible:false},
+  {text:"The Lord is my shepherd; I shall not want.", bible:true},
+  {text:"Adam had a pet dragon.", bible:false},
+  // Add 300+ phrases here (mix true/false)
+];
+
+function startGame(){
+  playerName=document.getElementById("playerName").value||"Player";
+  score=0;
+  questionIndex=0;
+  document.getElementById("menu").classList.remove("active");
+  document.getElementById("game").classList.add("active");
+  renderQuestion();
 }
+
+function renderQuestion(){
+  let q = questions[questionIndex % questions.length];
+  document.getElementById("questionBox").innerText = q.text;
+  document.getElementById("score").innerText = "Score: " + score;
+}
+
+function answer(userChoice){
+  let correct = questions[questionIndex % questions.length].bible;
+  if(userChoice === correct){score+=10;} else {score-=10;}
+  questionIndex++;
+  renderQuestion();
+}
+
+function submitScore(){
+  saveScore(playerName,score);
+  alert("Final Score: "+score);
+  goHome();
+}
+
+function goHome(){
+  document.getElementById("game").classList.remove("active");
+  document.getElementById("menu").classList.add("active");
+  renderLeaderboard();
+}
+
+function saveScore(name,score){
+  let scores=JSON.parse(localStorage.getItem("bibleScores")||"[]");
+  scores.push({name,score});
+  scores.sort((a,b)=>b.score-b.score);
+  scores=scores.slice(0,10);
+  localStorage.setItem("bibleScores",JSON.stringify(scores));
+}
+
+function renderLeaderboard(){
+  let scores=JSON.parse(localStorage.getItem("bibleScores")||"[]");
+  let list=document.getElementById("leaderList");
+  list.innerHTML="";
+  scores.forEach(s=>{
+    let li=document.createElement("li");
+    li.textContent=s.name+" - "+s.score;
+    list.appendChild(li);
+  });
+}
+
+renderLeaderboard();
+</script>
+</body>
+</html>
