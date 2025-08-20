@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Snake Arcade</title>
+
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248"
+     crossorigin="anonymous"></script>
+
+<style>
+  :root{
+    --bg:#000;
+    --fg:#00ff88;
+    --accent:#00e5ff;
+    --danger:#ff3366;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
+    color:var(--fg);
+    font-family: "Courier New", monospace;
+    text-align:center;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    padding:10px;
+  }
+  .frame{
+    width:min(900px, 94vw);
+    border:2px solid var(--accent);
+    border-radius:16px;
+    padding:20px;
+    margin-top:10px;
+    background: rgba(0,0,0,.6);
+    box-shadow: 0 0 12px var(--accent), inset 0 0 20px rgba(0,229,255,.2);
+  }
+  h1{
+    margin:0 0 14px;
+    font-size: clamp(26px, 6vw, 40px);
+    color:#a0fff2;
+    text-shadow: 0 0 10px var(--fg), 0 0 24px var(--accent);
+  }
+  .menu, .game{display:none}
+  .menu.active, .game.active{display:block}
+  .btn{
+    background:#031416;
+    color:var(--fg);
+    border:2px solid var(--accent);
+    padding:10px 18px;
+    border-radius:10px;
+    margin:6px;
+    cursor:pointer;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    box-shadow: 0 0 12px rgba(0,229,255,.35);
+  }
+  .btn.red{border-color:var(--danger); color:#ffdbe6;}
+  #score{margin:6px; font-size:20px}
+  canvas{
+    width:min(92vw, 400px);
+    height:min(92vw, 400px);
+    background:#06191b;
+    border:3px solid var(--accent);
+    border-radius:12px;
+    box-shadow:0 0 18px rgba(0,229,255,.35);
+    margin:10px auto;
+  }
+  #leaderList{padding:0; margin:0; list-style:none; text-align:left;}
+  #leaderList li{display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed #0c3a3f;}
+  footer{
+    margin-top:20px;
+    font-size:14px;
+    opacity:.7;
+  }
+  /* Mobile swipe area */
+  #touchControls{
+    margin-top:12px;
+    display:flex;
+    justify-content:center;
+    gap:12px;
+  }
+  .touchBtn{
+    background:#022;
+    border:1px solid var(--accent);
+    padding:20px;
+    border-radius:50%;
+    font-size:20px;
+    color:var(--fg);
+    user-select:none;
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <h1>🐍 Snake Arcade</h1>
+
+    <!-- MENU -->
+    <div id="menu" class="menu active">
+      <p>Enter your name to begin:</p>
+      <input id="playerName" type="text" maxlength="20" placeholder="Name">
+      <div>
+        <button class="btn" onclick="startGame('easy')">Easy</button>
+        <button class="btn" onclick="startGame('normal')">Normal</button>
+        <button class="btn" onclick="startGame('hard')">Hard</button>
+      </div>
+      <h3>🏆 Leaderboard</h3>
+      <ol id="leaderList"></ol>
+    </div>
+
+    <!-- GAME -->
+    <div id="game" class="game">
+      <div id="score">Score: 0</div>
+      <canvas id="snakeCanvas" width="400" height="400"></canvas>
+      <div id="touchControls">
+        <div class="touchBtn" onclick="changeDir('ArrowUp')">⬆️</div>
+        <div class="touchBtn" onclick="changeDir('ArrowLeft')">⬅️</div>
+        <div class="touchBtn" onclick="changeDir('ArrowDown')">⬇️</div>
+        <div class="touchBtn" onclick="changeDir('ArrowRight')">➡️</div>
+      </div>
+      <button class="btn red" onclick="quitToMenu()">Quit</button>
+    </div>
+  </div>
+
+  <!-- AdSense placeholder -->
+  <ins class="adsbygoogle"
+      style="display:block; margin:20px auto;"
+      data-ad-client="ca-pub-7172412535146248"
+      data-ad-slot="1234567890"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+  <footer>© Dominion Games</footer>
+
+<script>
+let canvas=document.getElementById("snakeCanvas");
+let ctx=canvas.getContext("2d");
+let snake, dir, food, score, gameLoop, speed, playerName;
+
+function startGame(diff){
+  playerName=document.getElementById("playerName").value||"Player";
+  snake=[{x:10,y:10}];
+  dir={x:1,y:0};
+  food=spawnFood();
+  score=0;
+  speed = diff==="easy"?150:diff==="hard"?70:100;
+  document.getElementById("score").innerText="Score: 0";
+  document.getElementById("menu").classList.remove("active");
+  document.getElementById("game").classList.add("active");
+  clearInterval(gameLoop);
+  gameLoop=setInterval(tick,speed);
+}
+
+function tick(){
+  let head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+  if(head.x<0||head.y<0||head.x>=20||head.y>=20||snake.some(s=>s.x===head.x&&s.y===head.y)){
+    return gameOver();
+  }
+  snake.unshift(head);
+  if(head.x===food.x&&head.y===food.y){
+    score++;
+    document.getElementById("score").innerText="Score: "+score;
+    food=spawnFood();
+  } else snake.pop();
+  draw();
+}
+
+function draw(){
+  ctx.fillStyle="#000";
+  ctx.fillRect(0,0,400,400);
+  ctx.fillStyle="lime";
+  snake.forEach(s=>ctx.fillRect(s.x*20,s.y*20,18,18));
+  ctx.fillStyle="red";
+  ctx.fillRect(food.x*20,food.y*20,18,18);
+}
+
+function spawnFood(){
+  let x,y;
+  do{ x=Math.floor(Math.random()*20); y=Math.floor(Math.random()*20);}
+  while(snake.some(s=>s.x===x&&s.y===y));
+  return {x,y};
+}
+
+function changeDir(key){
+  if(key==="ArrowUp"&&dir.y!==1) dir={x:0,y:-1};
+  if(key==="ArrowDown"&&dir.y!==-1) dir={x:0,y:1};
+  if(key==="ArrowLeft"&&dir.x!==1) dir={x:-1,y:0};
+  if(key==="ArrowRight"&&dir.x!==-1) dir={x:1,y:0};
+}
+
+document.addEventListener("keydown",e=>changeDir(e.key));
+
+function gameOver(){
+  clearInterval(gameLoop);
+  saveScore(playerName,score);
+  alert("Game Over! Score: "+score);
+  quitToMenu();
+}
+
+function quitToMenu(){
+  document.getElementById("game").classList.remove("active");
+  document.getElementById("menu").classList.add("active");
+  renderLeaderboard();
+}
+
+function saveScore(name,score){
+  let scores=JSON.parse(localStorage.getItem("snakeScores")||"[]");
+  scores.push({name,score});
+  scores.sort((a,b)=>b.score-a.score);
+  scores=scores.slice(0,10);
+  localStorage.setItem("snakeScores",JSON.stringify(scores));
+}
+
+function renderLeaderboard(){
+  let scores=JSON.parse(localStorage.getItem("snakeScores")||"[]");
+  let list=document.getElementById("leaderList");
+  list.innerHTML="";
+  scores.forEach(s=>{
+    let li=document.createElement("li");
+    li.textContent=s.name+" - "+s.score;
+    list.appendChild(li);
+  });
+}
+renderLeaderboard();
+
+// Mobile swipe support
+let touchStartX=0, touchStartY=0;
+canvas.addEventListener("touchstart",e=>{
+  let t=e.touches[0]; touchStartX=t.clientX; touchStartY=t.clientY;
+});
+canvas.addEventListener("touchend",e=>{
+  let t=e.changedTouches[0];
+  let dx=t.clientX-touchStartX, dy=t.clientY-touchStartY;
+  if(Math.abs(dx)>Math.abs(dy)){
+    if(dx>0) changeDir("ArrowRight"); else changeDir("ArrowLeft");
+  } else {
+    if(dy>0) changeDir("ArrowDown"); else changeDir("ArrowUp");
+  }
+});
+</script>
+</body>
+</html>
