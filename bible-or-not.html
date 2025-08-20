@@ -1,144 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dominion Games - Bible or Not?</title>
-
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248"
-     crossorigin="anonymous"></script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bible or Not Quiz</title>
 
 <style>
-  :root{
-    --bg:#000;
-    --fg:#00ff88;
-    --accent:#00e5ff;
-    --danger:#ff3366;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
-    color:var(--fg);
-    font-family: "Courier New", monospace;
-    text-align:center;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-start;
-    padding:20px;
-  }
-  h1{
-    margin:20px 0 10px;
-    font-size: clamp(24px, 6vw, 42px);
-    color:#a0fff2;
-    text-shadow: 0 0 10px var(--fg),0 0 24px var(--accent);
-    letter-spacing: .06em;
-  }
-  .game-panel{
-    background: rgba(0,0,0,.55);
-    border:2px solid var(--accent);
-    border-radius:16px;
-    padding:20px;
-    width:min(420px, 95vw);
-    box-shadow:0 0 12px var(--accent), inset 0 0 30px rgba(0,229,255,.15);
-  }
-  #quote{
-    font-size:18px;
-    margin:20px 0;
-    min-height:60px;
-  }
-  .btn{
-    background:#031416;
-    color:var(--fg);
-    border:2px solid var(--accent);
-    padding:10px 20px;
-    margin:8px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:700;
-    text-transform:uppercase;
-    box-shadow:0 0 12px rgba(0,229,255,.35);
-    transition: transform .06s ease, box-shadow .12s ease;
-  }
-  .btn:hover{transform:translateY(-1px); box-shadow:0 0 18px rgba(0,229,255,.55);}
-  .btn.red{border-color:var(--danger); color:#ffdbe6; box-shadow:0 0 12px rgba(255,51,102,.35);}
-  #score{
-    font-size:18px;
-    margin:12px 0;
-    padding:6px 12px;
-    border:1px solid var(--accent);
-    border-radius:10px;
-    background:#031416;
-    box-shadow: inset 0 0 10px rgba(0,229,255,.15);
-  }
-  footer{
-    margin-top:20px;
-    font-size:14px;
-    color:var(--accent);
-  }
+:root{
+  --bg:#000;
+  --fg:#ffeb00;
+  --accent:#ffb400;
+  --correct:#00ff88;
+  --wrong:#ff3366;
+}
+body{
+  margin:0;
+  font-family:"Courier New", monospace;
+  background: radial-gradient(1200px 1200px at 50% 10%, #001a00 0%, #000 60%);
+  color:var(--fg);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  min-height:100vh;
+  padding:10px;
+  text-align:center;
+}
+.frame{
+  width:min(900px,94vw);
+  border:2px solid var(--accent);
+  border-radius:16px;
+  padding:20px;
+  margin-top:10px;
+  background: rgba(0,0,0,.6);
+  box-shadow:0 0 12px var(--accent), inset 0 0 20px rgba(255,180,0,.2);
+}
+h1{
+  margin:0 0 14px;
+  font-size: clamp(26px, 6vw, 40px);
+  color: #ffd700;
+  text-shadow: 0 0 10px var(--fg), 0 0 24px var(--accent);
+}
+.menu, .game{display:none}
+.menu.active, .game.active{display:block}
+.btn{
+  background:#031400;
+  color:var(--fg);
+  border:2px solid var(--accent);
+  padding:10px 18px;
+  border-radius:10px;
+  margin:6px;
+  cursor:pointer;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  box-shadow:0 0 12px rgba(255,180,0,.35);
+}
+.btn.red{border-color:var(--wrong); color:#ffdbe6;}
+#question{font-size:20px; margin:20px 0;}
+#score{margin:6px; font-size:20px}
+#leaderList{padding:0; margin:0; list-style:none; text-align:left;}
+#leaderList li{display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed #0c3a0f;}
+#message{
+  margin-top:10px;
+  color:#fff;
+  background:#022;
+  border:1px solid var(--accent);
+  border-radius:8px;
+  padding:6px 12px;
+  font-size:16px;
+  display:none;
+}
 </style>
 </head>
 <body>
-  <h1>Dominion Games</h1>
-  <div class="game-panel">
-    <h2>Bible or Not?</h2>
-    <div id="quote">Loading...</div>
+<div class="frame">
+  <h1>Bible or Not Quiz</h1>
+
+  <!-- MENU -->
+  <div id="menu" class="menu active">
+    <p>Enter your name to start:</p>
+    <input id="playerName" type="text" maxlength="20" placeholder="Name">
     <div>
-      <button class="btn" onclick="answer(true)">Bible</button>
-      <button class="btn red" onclick="answer(false)">Not Bible</button>
+      <button class="btn" onclick="startQuiz()">Start Quiz</button>
     </div>
-    <div id="score">Score: 0</div>
+    <h3>🏆 Leaderboard</h3>
+    <ol id="leaderList"></ol>
   </div>
 
-  <!-- AdSense -->
-  <ins class="adsbygoogle"
-       style="display:block; text-align:center; margin:20px 0;"
-       data-ad-client="ca-pub-7172412535146248"
-       data-ad-slot="1234567890"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
+  <!-- GAME -->
+  <div id="game" class="game">
+    <div id="score">Score: 0</div>
+    <div id="question">Question here</div>
+    <div>
+      <button class="btn" onclick="answer(true)">Bible</button>
+      <button class="btn red" onclick="answer(false)">Not</button>
+    </div>
+    <div style="margin-top:10px;">
+      <button class="btn red" onclick="quitToMenu()">🏠 Home</button>
+    </div>
+    <div id="message"></div>
+  </div>
+</div>
 
-  <footer>Swipe the direction you want the snake to go in or tap — Dominion Games</footer>
+<footer>© Dominion Games</footer>
 
 <script>
-const quotes = [
-  { text:"The Lord is my shepherd; I shall not want.", bible:true },
-  { text:"Do unto others as you would have them do unto you.", bible:true },
-  { text:"Fortune favors the brave.", bible:false },
-  { text:"I can do all things through Christ who strengthens me.", bible:true },
-  { text:"May the odds be ever in your favor.", bible:false },
-  { text:"Ask and it will be given to you.", bible:true },
-  { text:"To be or not to be, that is the question.", bible:false }
+const questions=[
+  {q:"Moses parted the Red Sea", answer:true},
+  {q:"Spiderman fights crime in NYC", answer:false},
+  {q:"David defeated Goliath", answer:true},
+  {q:"Sherlock Holmes solves mysteries", answer:false},
+  {q:"Noah built the ark", answer:true},
+  {q:"Frodo destroys the One Ring", answer:false}
 ];
 
-let score = 0;
-let current;
+let currentQ=0, score=0, playerName;
 
-function nextQuote(){
-  current = quotes[Math.floor(Math.random()*quotes.length)];
-  document.getElementById('quote').innerText = current.text;
+function startQuiz(){
+  playerName=document.getElementById("playerName").value||"Player";
+  currentQ=0;
+  score=0;
+  document.getElementById("score").innerText="Score: 0";
+  document.getElementById("menu").classList.remove("active");
+  document.getElementById("game").classList.add("active");
+  showQuestion();
 }
 
-function answer(choice){
-  if(choice === current.bible){
-    score++;
-    alert("Correct!");
+function showQuestion(){
+  if(currentQ>=questions.length) return quizEnd();
+  document.getElementById("question").innerText=questions[currentQ].q;
+}
+
+function answer(userAnswer){
+  let correct=questions[currentQ].answer===userAnswer;
+  if(correct){
+    score+=10;
+    showMessage("+10 Points!",1000,"#00ff88");
   } else {
-    alert("Wrong!");
-    score = 0;
+    score-=10;
+    showMessage("-10 Points!",1000,"#ff3366");
   }
-  document.getElementById('score').innerText = "Score: " + score;
-  nextQuote();
+  document.getElementById("score").innerText="Score: "+score;
+  currentQ++;
+  setTimeout(showQuestion,500);
 }
 
-// Start the game
-nextQuote();
+function quizEnd(){
+  saveScore(playerName,score);
+  showMessage("Quiz Over! Score: "+score,2000);
+  setTimeout(quitToMenu,2000);
+}
+
+function quitToMenu(){
+  document.getElementById("game").classList.remove("active");
+  document.getElementById("menu").classList.add("active");
+  renderLeaderboard();
+}
+
+function saveScore(name,score){
+  let scores=JSON.parse(localStorage.getItem("quizScores")||"[]");
+  scores.push({name,score});
+  scores.sort((a,b)=>b.score-a.score);
+  scores=scores.slice(0,10);
+  localStorage.setItem("quizScores",JSON.stringify(scores));
+}
+
+function renderLeaderboard(){
+  let scores=JSON.parse(localStorage.getItem("quizScores")||"[]");
+  let list=document.getElementById("leaderList");
+  list.innerHTML="";
+  scores.forEach(s=>{
+    let li=document.createElement("li");
+    li.textContent=s.name+" - "+s.score;
+    list.appendChild(li);
+  });
+}
+
+function showMessage(msg,duration=1000,color=var(--fg)){
+  let m=document.getElementById("message");
+  m.innerText=msg;
+  m.style.display="block";
+  m.style.borderColor=color;
+  m.style.color=color;
+  clearTimeout(m.timeout);
+  m.timeout=setTimeout(()=>{m.style.display="none"},duration);
+}
+
+renderLeaderboard();
 </script>
 </body>
 </html>
