@@ -157,6 +157,14 @@ let canvas=document.getElementById("snakeCanvas");
 let ctx=canvas.getContext("2d");
 let snake, dir, food, score, gameLoop, speed, playerName, paused=false;
 
+function quitToHome(){
+  document.getElementById("menu").classList.remove("active");
+  // If you have a main arcade page, show it here
+  // For now, we'll just reload the page as a simple home
+  location.reload();
+}
+
+     
 function startGame(diff){
   playerName=document.getElementById("playerName").value||"Player";
   snake=[{x:10,y:10}];
@@ -283,3 +291,19 @@ renderLeaderboard();
 </script>
 </body>
 </html>
+
+<!-- MENU -->
+<div id="menu" class="menu active">
+  <p>Enter your name to begin:</p>
+  <input id="playerName" type="text" maxlength="20" placeholder="Name">
+  <div>
+    <button class="btn" onclick="startGame('easy')">Easy</button>
+    <button class="btn" onclick="startGame('normal')">Normal</button>
+    <button class="btn" onclick="startGame('hard')">Hard</button>
+  </div>
+  <div style="margin-top:10px;">
+    <button class="btn red" onclick="quitToHome()">🏠 Home</button>
+  </div>
+  <h3>🏆 Leaderboard</h3>
+  <ol id="leaderList"></ol>
+</div>
