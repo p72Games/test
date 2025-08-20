@@ -1,421 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Dominion Games — Bible or Not</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dominion Games - Bible or Not?</title>
+
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248"
+     crossorigin="anonymous"></script>
+
 <style>
   :root{
     --bg:#000;
-    --fg:#bfffea;
+    --fg:#00ff88;
     --accent:#00e5ff;
-    --accent2:#00ff88;
     --danger:#ff3366;
-    --muted:#7bd9cc;
   }
   *{box-sizing:border-box}
   body{
     margin:0;
+    background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
+    color:var(--fg);
+    font-family: "Courier New", monospace;
+    text-align:center;
     min-height:100vh;
     display:flex;
+    flex-direction:column;
     align-items:center;
-    justify-content:center;
-    background: radial-gradient(1200px 1200px at 50% -10%, #00121a 0%, #000 60%);
-    color:var(--fg);
-    font-family: "Courier New", ui-monospace, Menlo, Consolas, monospace;
-    padding:16px;
+    justify-content:flex-start;
+    padding:20px;
   }
-  .frame{
-    width:min(920px, 96vw);
+  h1{
+    margin:20px 0 10px;
+    font-size: clamp(24px, 6vw, 42px);
+    color:#a0fff2;
+    text-shadow: 0 0 10px var(--fg),0 0 24px var(--accent);
+    letter-spacing: .06em;
+  }
+  .game-panel{
     background: rgba(0,0,0,.55);
     border:2px solid var(--accent);
     border-radius:16px;
     padding:20px;
-    box-shadow: 0 0 14px var(--accent), inset 0 0 28px rgba(0,229,255,.15);
-    backdrop-filter: blur(4px);
-  }
-  header{
-    text-align:center;
-    margin-bottom:12px;
-  }
-  h1{
-    margin:0;
-    font-size: clamp(26px, 6vw, 42px);
-    color:#a0fff2;
-    letter-spacing:.06em;
-    text-shadow:0 0 10px var(--accent2), 0 0 24px var(--accent);
-  }
-  .sub{opacity:.85; color:var(--muted); margin-top:4px}
-  .grid{
-    display:grid;
-    grid-template-columns: 1fr;
-    gap:14px;
-  }
-  @media (min-width: 820px){
-    .grid{ grid-template-columns: 3fr 2fr; }
-  }
-  .panel{
-    border:1px solid var(--accent);
-    border-radius:12px;
-    background: rgba(0,8,10,.55);
-    box-shadow: 0 0 12px rgba(0,229,255,.18);
-    padding:16px;
+    width:min(420px, 95vw);
+    box-shadow:0 0 12px var(--accent), inset 0 0 30px rgba(0,229,255,.15);
   }
   #quote{
-    font-size: clamp(18px, 4.6vw, 28px);
-    line-height:1.35;
-    text-align:center;
-    color:#d9fff7;
-  }
-  .attribution{
-    text-align:center;
-    font-size:14px;
-    color:var(--muted);
-    min-height:20px;
-    margin-top:6px;
-  }
-  .btn-row{
-    display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:12px;
+    font-size:18px;
+    margin:20px 0;
+    min-height:60px;
   }
   .btn{
     background:#031416;
     color:var(--fg);
     border:2px solid var(--accent);
-    padding:12px 18px;
-    border-radius:12px;
+    padding:10px 20px;
+    margin:8px;
+    border-radius:10px;
     cursor:pointer;
-    font-weight:800;
+    font-weight:700;
     text-transform:uppercase;
-    letter-spacing:.08em;
     box-shadow:0 0 12px rgba(0,229,255,.35);
-    min-width:160px;
-    transition:transform .06s ease, box-shadow .12s ease, border-color .2s ease;
-    user-select:none;
+    transition: transform .06s ease, box-shadow .12s ease;
   }
-  .btn:hover{ transform:translateY(-1px); box-shadow:0 0 16px rgba(0,229,255,.55); }
-  .btn:active{ transform:translateY(0); }
-  .btn.green{ border-color:var(--accent2) }
-  .btn.red{ border-color:var(--danger) }
-  .muted{ opacity:.85; color:var(--muted) }
-  .hud{
-    display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center;
-    margin-top:6px;
-    font-size:15px;
-  }
-  .chip{
-    border:1px solid var(--accent);
-    border-radius:999px;
+  .btn:hover{transform:translateY(-1px); box-shadow:0 0 18px rgba(0,229,255,.55);}
+  .btn.red{border-color:var(--danger); color:#ffdbe6; box-shadow:0 0 12px rgba(255,51,102,.35);}
+  #score{
+    font-size:18px;
+    margin:12px 0;
     padding:6px 12px;
+    border:1px solid var(--accent);
+    border-radius:10px;
     background:#031416;
-    box-shadow: inset 0 0 10px rgba(0,229,255,.12);
+    box-shadow: inset 0 0 10px rgba(0,229,255,.15);
   }
-  .prog{
-    height:10px; border:1px solid var(--accent); border-radius:999px; background:#071d21; overflow:hidden;
-    width:min(460px, 90%);
-    margin:0 auto;
-  }
-  .prog > div{
-    height:100%; width:0%; background:linear-gradient(90deg, var(--accent2), var(--accent));
-    box-shadow:0 0 12px rgba(0,229,255,.35);
-    transition:width .25s ease;
-  }
-  .explain{
-    margin-top:10px;
-    text-align:center;
-    min-height:30px;
-  }
-  .right{ color:#b6ffd8 }
-  .wrong{ color:#ffd2de }
-  .side{
-    display:flex; flex-direction:column; gap:12px;
-  }
-  .card{
-    border:1px dashed #0c3a3f;
-    border-radius:12px;
-    padding:14px;
-    background:rgba(0,12,14,.35);
-  }
-  ol{margin:0; padding-left:20px;}
-  li{padding:6px 2px; border-bottom:1px dashed #0c3a3f;}
   footer{
-    text-align:center; margin-top:14px; color:#8bb; font-size:14px;
+    margin-top:20px;
+    font-size:14px;
+    color:var(--accent);
   }
 </style>
 </head>
 <body>
-  <main class="frame">
-    <header>
-      <h1>DOMINION GAMES</h1>
-      <div class="sub">Bible or Not — Guess the source!</div>
-    </header>
-
-    <div class="grid">
-      <!-- Game area -->
-      <section class="panel">
-        <div id="quote">Tap “Start” to play.</div>
-        <div class="attribution" id="attrib"></div>
-
-        <div class="btn-row" id="actionRow">
-          <button class="btn" id="startBtn">▶ Start (10)</button>
-          <button class="btn green" id="btnBible" style="display:none">Bible</button>
-          <button class="btn red" id="btnNot" style="display:none">Not Bible</button>
-        </div>
-
-        <div class="hud">
-          <div class="chip">Q: <span id="qNum">0</span>/10</div>
-          <div class="chip">Score: <span id="score">0</span></div>
-          <div class="chip">Streak: <span id="streak">0</span></div>
-          <div class="chip">Best: <span id="best">0</span></div>
-        </div>
-        <div class="prog"><div id="bar"></div></div>
-
-        <div class="explain" id="explain"></div>
-
-        <div class="btn-row" id="nextRow" style="display:none">
-          <button class="btn" id="nextBtn">Next</button>
-          <button class="btn" id="restartBtn" style="display:none">Play Again</button>
-        </div>
-      </section>
-
-      <!-- Side panel -->
-      <aside class="side">
-        <div class="card">
-          <strong>How to play</strong>
-          <ul class="muted" style="margin-top:6px">
-            <li>Read the quote.</li>
-            <li>Guess if it’s from the Bible or not.</li>
-            <li>Keyboard: <b>B</b> = Bible, <b>N</b> = Not, <b>Enter</b> = Next.</li>
-            <li>10 questions per round — try for a perfect streak!</li>
-          </ul>
-        </div>
-        <div class="card">
-          <strong>About</strong>
-          <p class="muted" style="margin-top:6px">
-            Verses use common wording; references are shown when applicable. Non-Bible sayings include popular proverbs and misquotes.
-          </p>
-        </div>
-      </aside>
+  <h1>Dominion Games</h1>
+  <div class="game-panel">
+    <h2>Bible or Not?</h2>
+    <div id="quote">Loading...</div>
+    <div>
+      <button class="btn" onclick="answer(true)">Bible</button>
+      <button class="btn red" onclick="answer(false)">Not Bible</button>
     </div>
+    <div id="score">Score: 0</div>
+  </div>
 
-    <footer>© 2025 Dominion Games</footer>
-  </main>
+  <!-- AdSense -->
+  <ins class="adsbygoogle"
+       style="display:block; text-align:center; margin:20px 0;"
+       data-ad-client="ca-pub-7172412535146248"
+       data-ad-slot="1234567890"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+
+  <footer>Swipe the direction you want the snake to go in or tap — Dominion Games</footer>
 
 <script>
-/* ========= DATA =========
-   Each item: { text, isBible, ref (if Bible), note (if not Bible) }
-   Keep quotes short; wording is mostly KJV/ESV-style for familiarity.
-*/
-const BANK = [
-  // BIBLE — Old & New Testament
-  {text:"In the beginning God created the heaven and the earth.", isBible:true, ref:"Genesis 1:1"},
-  {text:"The Lord is my shepherd; I shall not want.", isBible:true, ref:"Psalm 23:1"},
-  {text:"For God so loved the world, that he gave his only begotten Son.", isBible:true, ref:"John 3:16"},
-  {text:"Jesus wept.", isBible:true, ref:"John 11:35"},
-  {text:"Trust in the Lord with all thine heart; and lean not unto thine own understanding.", isBible:true, ref:"Proverbs 3:5"},
-  {text:"Pride goeth before destruction, and an haughty spirit before a fall.", isBible:true, ref:"Proverbs 16:18"},
-  {text:"I can do all things through Christ who strengthens me.", isBible:true, ref:"Philippians 4:13"},
-  {text:"For the wages of sin is death; but the gift of God is eternal life through Jesus Christ our Lord.", isBible:true, ref:"Romans 6:23"},
-  {text:"Be strong and courageous; do not be afraid, for the Lord your God is with you wherever you go.", isBible:true, ref:"Joshua 1:9"},
-  {text:"The joy of the Lord is your strength.", isBible:true, ref:"Nehemiah 8:10"},
-  {text:"Love is patient and kind; love does not envy or boast; it is not arrogant.", isBible:true, ref:"1 Corinthians 13:4"},
-  {text:"Your word is a lamp to my feet and a light to my path.", isBible:true, ref:"Psalm 119:105"},
-  {text:"Ask, and it shall be given you; seek, and ye shall find.", isBible:true, ref:"Matthew 7:7"},
-  {text:"Man shall not live by bread alone.", isBible:true, ref:"Matthew 4:4"},
-  {text:"The Lord bless you and keep you; the Lord make his face shine upon you.", isBible:true, ref:"Numbers 6:24–25"},
-  {text:"Iron sharpeneth iron; so a man sharpeneth the countenance of his friend.", isBible:true, ref:"Proverbs 27:17"},
-  {text:"For we walk by faith, not by sight.", isBible:true, ref:"2 Corinthians 5:7"},
-  {text:"He has told you, O man, what is good; and what does the Lord require of you but to do justice, love kindness, and walk humbly with your God?", isBible:true, ref:"Micah 6:8"},
-  {text:"The truth shall make you free.", isBible:true, ref:"John 8:32"},
-
-  // NOT BIBLE — common sayings / misattributions
-  {text:"God helps those who help themselves.", isBible:false, note:"Not in the Bible; popularized by Benjamin Franklin."},
-  {text:"Cleanliness is next to godliness.", isBible:false, note:"Not in the Bible; traced to John Wesley/Francis Bacon."},
-  {text:"This too shall pass.", isBible:false, note:"Not in the Bible; Persian adage later popularized in English."},
-  {text:"Money is the root of all evil.", isBible:false, note:"Misquote; 1 Tim 6:10 says 'the love of money' is a root of all kinds of evil."},
-  {text:"Spare the rod, spoil the child.", isBible:false, note:"Paraphrase from a 17th-century poem; Proverbs mentions the rod but not this exact phrase."},
-  {text:"Hate the sin, love the sinner.", isBible:false, note:"Not in the Bible; phrase associated with Augustine/Gandhi."},
-  {text:"To thine own self be true.", isBible:false, note:"Shakespeare, Hamlet (Act 1, Scene 3)."},
-  {text:"The lion shall lie down with the lamb.", isBible:false, note:"Popular mashup; Isaiah 11:6 says 'the wolf shall dwell with the lamb'."},
-  {text:"Confession is good for the soul.", isBible:false, note:"Scottish proverb; concept exists but not this wording."},
-  {text:"Moderation in all things.", isBible:false, note:"Aristotle (via later summaries); not Scripture."},
-  {text:"A penny saved is a penny earned.", isBible:false, note:"Benjamin Franklin, Poor Richard’s Almanack."},
-  {text:"Charity begins at home.", isBible:false, note:"Not biblical; traced to Sir Thomas Browne and others."},
-  {text:"The Lord works in mysterious ways.", isBible:false, note:"From William Cowper’s hymn; not a Bible verse."},
-  {text:"Neither a borrower nor a lender be.", isBible:false, note:"Shakespeare, Hamlet."},
-  {text:"The blood of the covenant is thicker than the water of the womb.", isBible:false, note:"Not Scripture; viral saying with debated origins."},
-  {text:"Be the change you wish to see in the world.", isBible:false, note:"Attributed to Gandhi; not biblical text."},
-  {text:"Blessed are the flexible, for they shall not be bent out of shape.", isBible:false, note:"Humorous maxim; not in the Bible."},
-  {text:"Faith over fear.", isBible:false, note:"Modern slogan; biblical theme, not a verse."},
-  {text:"God will never give you more than you can handle.", isBible:false, note:"Common saying; misapplies 1 Cor 10:13 which is about temptation."}
+const quotes = [
+  { text:"The Lord is my shepherd; I shall not want.", bible:true },
+  { text:"Do unto others as you would have them do unto you.", bible:true },
+  { text:"Fortune favors the brave.", bible:false },
+  { text:"I can do all things through Christ who strengthens me.", bible:true },
+  { text:"May the odds be ever in your favor.", bible:false },
+  { text:"Ask and it will be given to you.", bible:true },
+  { text:"To be or not to be, that is the question.", bible:false }
 ];
 
-const ROUND_LEN = 10;
-const KEY_BEST = "bon_best_v1";
-
-let deck = [];
-let qIndex = 0;
 let score = 0;
-let streak = 0;
-let locked = false;
+let current;
 
-const els = {
-  quote: document.getElementById('quote'),
-  attrib: document.getElementById('attrib'),
-  startBtn: document.getElementById('startBtn'),
-  btnBible: document.getElementById('btnBible'),
-  btnNot: document.getElementById('btnNot'),
-  qNum: document.getElementById('qNum'),
-  score: document.getElementById('score'),
-  streak: document.getElementById('streak'),
-  best: document.getElementById('best'),
-  bar: document.getElementById('bar'),
-  explain: document.getElementById('explain'),
-  nextRow: document.getElementById('nextRow'),
-  nextBtn: document.getElementById('nextBtn'),
-  restartBtn: document.getElementById('restartBtn'),
-  actionRow: document.getElementById('actionRow')
-};
+function nextQuote(){
+  current = quotes[Math.floor(Math.random()*quotes.length)];
+  document.getElementById('quote').innerText = current.text;
+}
 
-function randPick(array, n){
-  const copy = [...array];
-  for(let i=copy.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [copy[i],copy[j]] = [copy[j],copy[i]];
+function answer(choice){
+  if(choice === current.bible){
+    score++;
+    alert("Correct!");
+  } else {
+    alert("Wrong!");
+    score = 0;
   }
-  return copy.slice(0, n);
+  document.getElementById('score').innerText = "Score: " + score;
+  nextQuote();
 }
 
-function updateBest(){
-  const best = Number(localStorage.getItem(KEY_BEST) || "0");
-  els.best.textContent = best;
-  return best;
-}
-
-function setBestIfHigher(val){
-  const best = updateBest();
-  if(val > best){
-    localStorage.setItem(KEY_BEST, String(val));
-    els.best.textContent = val;
-  }
-}
-
-function resetRound(){
-  deck = randPick(BANK, ROUND_LEN);
-  qIndex = 0;
-  score = 0;
-  streak = 0;
-  locked = false;
-  els.qNum.textContent = "0";
-  els.score.textContent = "0";
-  els.streak.textContent = "0";
-  els.bar.style.width = "0%";
-  els.explain.innerHTML = "";
-  els.attrib.textContent = "";
-  els.nextRow.style.display = "none";
-  els.restartBtn.style.display = "none";
-  els.btnBible.style.display = "inline-block";
-  els.btnNot.style.display = "inline-block";
-  els.startBtn.style.display = "none";
-  showCurrent();
-}
-
-function showCurrent(){
-  const item = deck[qIndex];
-  els.quote.textContent = "“" + item.text + "”";
-  els.attrib.textContent = "";
-  els.explain.innerHTML = "";
-  locked = false;
-  els.qNum.textContent = (qIndex+1);
-  els.bar.style.width = ((qIndex)/ROUND_LEN*100)+"%";
-}
-
-function answer(isBibleGuess){
-  if(locked) return;
-  locked = true;
-
-  const item = deck[qIndex];
-  const correct = (isBibleGuess === item.isBible);
-  if(correct){
-    score += 1;
-    streak += 1;
-    els.explain.innerHTML = `<span class="right">✔ Correct!</span>`;
-  }else{
-    streak = 0;
-    els.explain.innerHTML = `<span class="wrong">✖ Not quite.</span>`;
-  }
-  els.score.textContent = String(score);
-  els.streak.textContent = String(streak);
-
-  if(item.isBible){
-    els.attrib.textContent = item.ref ? `Bible — ${item.ref}` : "Bible";
-  }else{
-    els.attrib.textContent = item.note ? `Not Bible — ${item.note}` : "Not Bible";
-  }
-
-  // Show Next or Finish
-  els.nextRow.style.display = "flex";
-  els.nextBtn.style.display = (qIndex < ROUND_LEN-1) ? "inline-block" : "none";
-  els.restartBtn.style.display = (qIndex === ROUND_LEN-1) ? "inline-block" : "none";
-}
-
-function nextQuestion(){
-  if(qIndex < ROUND_LEN-1){
-    qIndex += 1;
-    showCurrent();
-    els.nextRow.style.display = "none";
-  }
-  els.bar.style.width = ((qIndex)/ROUND_LEN*100)+"%";
-
-  // finish?
-  if(qIndex === ROUND_LEN-1){
-    // showCurrent already set qNum to 10 when called
-  }
-}
-
-function finishRound(){
-  els.btnBible.style.display = "none";
-  els.btnNot.style.display = "none";
-  els.nextRow.style.display = "none";
-  els.startBtn.textContent = "▶ Play Again (10)";
-  els.startBtn.style.display = "inline-block";
-  els.quote.textContent = `Round complete! You scored ${score}/${ROUND_LEN}.`;
-  els.attrib.textContent = "";
-  els.explain.innerHTML = "";
-  els.bar.style.width = "100%";
-  setBestIfHigher(score);
-}
-
-// Event wiring
-els.startBtn.addEventListener('click', resetRound);
-els.btnBible.addEventListener('click', () => answer(true));
-els.btnNot.addEventListener('click', () => answer(false));
-els.nextBtn.addEventListener('click', nextQuestion);
-els.restartBtn.addEventListener('click', finishRound);
-
-// Keyboard: B (Bible), N (Not), Enter (Next), Space (Start if visible)
-document.addEventListener('keydown', (e)=>{
-  const k = e.key.toLowerCase();
-  if(els.startBtn.style.display !== "none" && (k === ' ' || k === 'enter')){ resetRound(); e.preventDefault(); return; }
-  if(k === 'b') { answer(true); }
-  if(k === 'n') { answer(false); }
-  if(k === 'enter') {
-    if(els.nextBtn.style.display !== "none") nextQuestion();
-    else if(els.restartBtn.style.display !== "none") finishRound();
-  }
-});
-
-// Mobile tap anywhere (optional): tap left half = Not, right half = Bible
-// Comment out if you don't want it.
-document.querySelector('.panel').addEventListener('click', (e)=>{
-  // ignore clicks on buttons (they already handle)
-  if(e.target.classList.contains('btn')) return;
-  const rect = e.currentTarget.getBoundingClientRect();
-  const mid = rect.left + rect.width/2;
-  if(els.btnBible.style.display === "none") return; // not in play
-  if(e.clientX >= mid) answer(true); else answer(false);
-}, {passive:true});
-
-updateBest();
+// Start the game
+nextQuote();
 </script>
 </body>
 </html>
