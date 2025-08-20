@@ -3,48 +3,52 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Bible or Not Quiz</title>
+<title>Bible or Not - Dominion Games</title>
+
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248"
+     crossorigin="anonymous"></script>
 
 <style>
 :root{
   --bg:#000;
-  --fg:#ffeb00;
-  --accent:#ffb400;
-  --correct:#00ff88;
-  --wrong:#ff3366;
+  --fg:#00ff88;
+  --accent:#00e5ff;
+  --danger:#ff3366;
 }
+*{box-sizing:border-box}
 body{
   margin:0;
-  font-family:"Courier New", monospace;
-  background: radial-gradient(1200px 1200px at 50% 10%, #001a00 0%, #000 60%);
+  background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
   color:var(--fg);
+  font-family: "Courier New", monospace;
+  text-align:center;
+  min-height:100vh;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:flex-start;
-  min-height:100vh;
   padding:10px;
-  text-align:center;
 }
 .frame{
-  width:min(900px,94vw);
+  width:min(900px, 94vw);
   border:2px solid var(--accent);
   border-radius:16px;
   padding:20px;
   margin-top:10px;
   background: rgba(0,0,0,.6);
-  box-shadow:0 0 12px var(--accent), inset 0 0 20px rgba(255,180,0,.2);
+  box-shadow: 0 0 12px var(--accent), inset 0 0 20px rgba(0,229,255,.2);
 }
 h1{
   margin:0 0 14px;
   font-size: clamp(26px, 6vw, 40px);
-  color: #ffd700;
+  color:#a0fff2;
   text-shadow: 0 0 10px var(--fg), 0 0 24px var(--accent);
 }
 .menu, .game{display:none}
 .menu.active, .game.active{display:block}
 .btn{
-  background:#031400;
+  background:#031416;
   color:var(--fg);
   border:2px solid var(--accent);
   padding:10px 18px;
@@ -54,73 +58,79 @@ h1{
   font-weight:700;
   text-transform:uppercase;
   letter-spacing:.06em;
-  box-shadow:0 0 12px rgba(255,180,0,.35);
+  box-shadow: 0 0 12px rgba(0,229,255,.35);
 }
-.btn.red{border-color:var(--wrong); color:#ffdbe6;}
-#question{font-size:20px; margin:20px 0;}
+.btn.red{border-color:var(--danger); color:#ffdbe6;}
 #score{margin:6px; font-size:20px}
-#leaderList{padding:0; margin:0; list-style:none; text-align:left;}
-#leaderList li{display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed #0c3a0f;}
-#message{
-  margin-top:10px;
-  color:#fff;
-  background:#022;
-  border:1px solid var(--accent);
-  border-radius:8px;
-  padding:6px 12px;
-  font-size:16px;
-  display:none;
+#question{margin:20px 0; font-size:20px; min-height:60px;}
+footer{
+  margin-top:20px;
+  font-size:14px;
+  opacity:.7;
 }
 </style>
 </head>
 <body>
-<div class="frame">
-  <h1>Bible or Not Quiz</h1>
+  <div class="frame">
+    <h1>📖 Bible or Not</h1>
 
-  <!-- MENU -->
-  <div id="menu" class="menu active">
-    <p>Enter your name to start:</p>
-    <input id="playerName" type="text" maxlength="20" placeholder="Name">
-    <div>
-      <button class="btn" onclick="startQuiz()">Start Quiz</button>
+    <div id="menu" class="menu active">
+      <p>Enter your name to begin:</p>
+      <input id="playerName" type="text" maxlength="20" placeholder="Name">
+      <div>
+        <button class="btn" onclick="startGame()">Start</button>
+      </div>
+      <h3>🏆 Leaderboard</h3>
+      <ol id="leaderList"></ol>
     </div>
-    <h3>🏆 Leaderboard</h3>
-    <ol id="leaderList"></ol>
+
+    <div id="game" class="game">
+      <div id="score">Score: 0</div>
+      <div id="question"></div>
+      <div>
+        <button class="btn" onclick="answer(true)">BIBLE ✅</button>
+        <button class="btn" onclick="answer(false)">NOT ❌</button>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="btn red" onclick="quitToMenu()">Home</button>
+      </div>
+    </div>
   </div>
 
-  <!-- GAME -->
-  <div id="game" class="game">
-    <div id="score">Score: 0</div>
-    <div id="question">Question here</div>
-    <div>
-      <button class="btn" onclick="answer(true)">Bible</button>
-      <button class="btn red" onclick="answer(false)">Not</button>
-    </div>
-    <div style="margin-top:10px;">
-      <button class="btn red" onclick="quitToMenu()">🏠 Home</button>
-    </div>
-    <div id="message"></div>
-  </div>
-</div>
+  <!-- AdSense placeholder -->
+  <ins class="adsbygoogle"
+      style="display:block; margin:20px auto;"
+      data-ad-client="ca-pub-7172412535146248"
+      data-ad-slot="1234567890"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
-<footer>© Dominion Games</footer>
+  <footer>© Dominion Games</footer>
 
 <script>
-const questions=[
-  {q:"Moses parted the Red Sea", answer:true},
-  {q:"Spiderman fights crime in NYC", answer:false},
-  {q:"David defeated Goliath", answer:true},
-  {q:"Sherlock Holmes solves mysteries", answer:false},
-  {q:"Noah built the ark", answer:true},
-  {q:"Frodo destroys the One Ring", answer:false}
+let questions=[
+  {q:"In the beginning God created the heavens and the earth.", a:true},
+  {q:"Jesus had a pet dog.", a:false},
+  {q:"Moses parted the Red Sea.", a:true},
+  {q:"The Bible mentions unicorns.", a:true},
+  {q:"Paul wrote the Book of Genesis.", a:false},
+  {q:"David defeated Goliath.", a:true},
+  {q:"Noah's Ark had dinosaurs.", a:false},
+  {q:"The Ten Commandments were given on Mount Sinai.", a:true},
+  {q:"The Bible has 120 books.", a:false},
+  {q:"Jonah was swallowed by a whale.", a:true},
+  // ... you can add 300+ questions here
 ];
 
-let currentQ=0, score=0, playerName;
+let playerName;
+let score;
+let currentIndex;
 
-function startQuiz(){
+function startGame(){
   playerName=document.getElementById("playerName").value||"Player";
-  currentQ=0;
   score=0;
+  currentIndex=0;
   document.getElementById("score").innerText="Score: 0";
   document.getElementById("menu").classList.remove("active");
   document.getElementById("game").classList.add("active");
@@ -128,28 +138,23 @@ function startQuiz(){
 }
 
 function showQuestion(){
-  if(currentQ>=questions.length) return quizEnd();
-  document.getElementById("question").innerText=questions[currentQ].q;
+  if(currentIndex>=questions.length){
+    gameOver();
+    return;
+  }
+  document.getElementById("question").innerText=questions[currentIndex].q;
 }
 
 function answer(userAnswer){
-  let correct=questions[currentQ].answer===userAnswer;
-  if(correct){
+  let correct=questions[currentIndex].a;
+  if(userAnswer===correct){
     score+=10;
-    showMessage("+10 Points!",1000,"#00ff88");
   } else {
     score-=10;
-    showMessage("-10 Points!",1000,"#ff3366");
   }
   document.getElementById("score").innerText="Score: "+score;
-  currentQ++;
-  setTimeout(showQuestion,500);
-}
-
-function quizEnd(){
-  saveScore(playerName,score);
-  showMessage("Quiz Over! Score: "+score,2000);
-  setTimeout(quitToMenu,2000);
+  currentIndex++;
+  showQuestion();
 }
 
 function quitToMenu(){
@@ -158,16 +163,21 @@ function quitToMenu(){
   renderLeaderboard();
 }
 
+function gameOver(){
+  saveScore(playerName,score);
+  quitToMenu();
+}
+
 function saveScore(name,score){
-  let scores=JSON.parse(localStorage.getItem("quizScores")||"[]");
+  let scores=JSON.parse(localStorage.getItem("bibleScores")||"[]");
   scores.push({name,score});
-  scores.sort((a,b)=>b.score-a.score);
+  scores.sort((a,b)=>b.score-b.score);
   scores=scores.slice(0,10);
-  localStorage.setItem("quizScores",JSON.stringify(scores));
+  localStorage.setItem("bibleScores",JSON.stringify(scores));
 }
 
 function renderLeaderboard(){
-  let scores=JSON.parse(localStorage.getItem("quizScores")||"[]");
+  let scores=JSON.parse(localStorage.getItem("bibleScores")||"[]");
   let list=document.getElementById("leaderList");
   list.innerHTML="";
   scores.forEach(s=>{
@@ -176,17 +186,6 @@ function renderLeaderboard(){
     list.appendChild(li);
   });
 }
-
-function showMessage(msg,duration=1000,color=var(--fg)){
-  let m=document.getElementById("message");
-  m.innerText=msg;
-  m.style.display="block";
-  m.style.borderColor=color;
-  m.style.color=color;
-  clearTimeout(m.timeout);
-  m.timeout=setTimeout(()=>{m.style.display="none"},duration);
-}
-
 renderLeaderboard();
 </script>
 </body>
