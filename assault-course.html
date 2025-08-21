@@ -12,9 +12,12 @@
   let score = 0;
   let gameRunning = true;
   const pillarWidth = 50;
-  const pillarGap = 230; // MUCH bigger gap (easier game)
   const pillarSpeed = 2;
   let frameCount = 0;
+
+  // Gap settings
+  const minGap = block.size * 3;  // minimum 3 blocks tall (90px)
+  const maxGap = 250;             // maximum gap (easier play)
 
   // High score
   let highScore = localStorage.getItem('assaultCourseHighScore') || 0;
@@ -30,10 +33,15 @@
 
   // Add pillar
   function addPillar() {
+    // randomize gap size between minGap and maxGap
+    const gapSize = Math.random() * (maxGap - minGap) + minGap;
+
+    // keep the whole gap inside the canvas
     const minGapY = 50;
-    const maxGapY = canvas.height - pillarGap - 50;
+    const maxGapY = canvas.height - gapSize - 50;
     const gapY = Math.random() * (maxGapY - minGapY) + minGapY;
-    pillars.push({ x: canvas.width, gapY: gapY, passed: false });
+
+    pillars.push({ x: canvas.width, gapY: gapY, gapSize: gapSize, passed: false });
   }
 
   // Handle input
@@ -83,7 +91,7 @@
       if (
         block.x + block.size > pillar.x &&
         block.x < pillar.x + pillarWidth &&
-        (block.y < pillar.gapY || block.y + block.size > pillar.gapY + pillarGap)
+        (block.y < pillar.gapY || block.y + block.size > pillar.gapY + pillar.gapSize)
       ) {
         endGame();
       }
@@ -108,7 +116,7 @@
     ctx.fillStyle = 'var(--fg)';
     pillars.forEach(pillar => {
       ctx.fillRect(pillar.x, 0, pillarWidth, pillar.gapY);
-      ctx.fillRect(pillar.x, pillar.gapY + pillarGap, pillarWidth, canvas.height);
+      ctx.fillRect(pillar.x, pillar.gapY + pillar.gapSize, pillarWidth, canvas.height);
     });
 
     frameCount++;
