@@ -115,7 +115,7 @@
   <h1>🟥 Assault Course</h1>
   <div id="game-container">
     <canvas id="game-canvas" width="400" height="600"></canvas>
-    <div id="score">Score: 0 | High: 0</div>
+    <div id="score">High Score: 0</div>
     <div id="game-over">
       <h2>Game Over</h2>
       <p>Score: <span id="final-score">0</span></p>
@@ -139,26 +139,26 @@
     let score = 0;
     let gameRunning = true;
     const pillarWidth = 50;
-    const pillarGap = 80; // Slightly larger than 2x block height (60px) for playability
+    const pillarGap = 120; // 2x double block height (60px * 2) for playability
     const pillarSpeed = 2;
     let frameCount = 0;
 
     // High score
     let highScore = localStorage.getItem('assaultCourseHighScore') || 0;
-    scoreDisplay.textContent = `Score: ${score} | High: ${highScore}`;
+    scoreDisplay.textContent = `High Score: ${highScore}`;
 
     function updateHighScore() {
       if (score > highScore) {
         highScore = score;
         localStorage.setItem('assaultCourseHighScore', highScore);
-        scoreDisplay.textContent = `Score: ${score} | High: ${highScore}`;
+        scoreDisplay.textContent = `High Score: ${highScore}`;
       }
     }
 
     // Add pillar
     function addPillar() {
-      const minGapY = 80; // Ensure gap starts low enough
-      const maxGapY = canvas.height - pillarGap - 80; // Ensure gap fits on screen
+      const minGapY = 120; // Ensure gap starts low enough
+      const maxGapY = canvas.height - pillarGap - 120; // Ensure gap fits on screen
       const gapY = Math.random() * (maxGapY - minGapY) + minGapY;
       pillars.push({
         x: canvas.width,
@@ -185,7 +185,6 @@
       block.velocity = 0;
       pillars = [];
       score = 0;
-      scoreDisplay.textContent = `Score: ${score} | High: ${highScore}`;
       gameOverScreen.style.display = 'none';
       gameRunning = true;
       frameCount = 0;
@@ -221,7 +220,6 @@
         // Score points
         if (!pillar.passed && block.x > pillar.x + pillarWidth) {
           score++;
-          scoreDisplay.textContent = `Score: ${score} | High: ${highScore}`;
           pillar.passed = true;
         }
       });
@@ -239,23 +237,4 @@
       ctx.fillStyle = 'var(--fg)';
       pillars.forEach(pillar => {
         ctx.fillRect(pillar.x, 0, pillarWidth, pillar.gapY);
-        ctx.fillRect(pillar.x, pillar.gapY + pillarGap, pillarWidth, canvas.height);
-      });
-
-      frameCount++;
-      requestAnimationFrame(gameLoop);
-    }
-
-    function endGame() {
-      gameRunning = false;
-      gameOverScreen.style.display = 'block';
-      finalScoreDisplay.textContent = score;
-      updateHighScore();
-    }
-
-    // Start game
-    addPillar();
-    gameLoop();
-  </script>
-</body>
-</html>
+        ctx.fillRect(pillar.x, pillar.gapY + pillarGap, pillarWidth, canvas
