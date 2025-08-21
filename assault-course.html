@@ -11,9 +11,6 @@
       --accent: #00e5ff;
       --danger: #ff3366;
     }
-    * {
-      box-sizing: border-box;
-    }
     body {
       margin: 0;
       background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
@@ -39,13 +36,12 @@
       background: rgba(0, 0, 0, 0.8);
       border: 2px solid var(--accent);
       border-radius: 8px;
-      box-shadow: 0 0 12px var(--accent);
     }
     #game-canvas {
       display: block;
       width: 100%;
       height: 100%;
-      background: #1a1a1a; /* Visible background to confirm canvas */
+      background: #1a1a1a; /* Visible background */
     }
     #score {
       position: absolute;
@@ -65,7 +61,6 @@
       border: 2px solid var(--danger);
       border-radius: 8px;
       padding: 20px;
-      box-shadow: 0 0 15px var(--danger);
       color: var(--fg);
       width: 80%;
       max-width: 350px;
@@ -88,11 +83,9 @@
       font-size: 16px;
       color: var(--bg);
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
     }
     #restart-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px var(--fg);
+      background: #00b7d4;
     }
     #instructions {
       font-size: 14px;
@@ -134,11 +127,12 @@
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       console.error('2. Canvas context not supported');
-      alert('Error: Your browser does not support HTML5 Canvas. Please use Chrome, Firefox, or Edge.');
+      alert('Error: Browser does not support HTML5 Canvas. Use Chrome, Firefox, or Edge.');
       return;
     }
     console.log('2. Canvas initialized');
 
+    // DOM elements
     const scoreDisplay = document.getElementById('score');
     const gameOverScreen = document.getElementById('game-over');
     const finalScoreDisplay = document.getElementById('final-score');
@@ -157,7 +151,7 @@
     // High score
     let highScore = parseInt(localStorage.getItem('assaultCourseHighScore')) || 0;
     scoreDisplay.textContent = `High Score: ${highScore}`;
-    console.log('3. High score initialized:', highScore);
+    console.log('3. High score:', highScore);
 
     function updateHighScore() {
       if (score > highScore) {
@@ -183,9 +177,10 @@
     function jump() {
       if (gameRunning) {
         block.velocity = block.jump;
-        console.log('6. Jump - velocity:', block.velocity, 'y:', block.y);
+        console.log('6. Jump - y:', block.y, 'velocity:', block.velocity);
       }
     }
+
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Space') {
         e.preventDefault();
@@ -196,7 +191,7 @@
     console.log('7. Input listeners added');
 
     restartBtn.addEventListener('click', () => {
-      console.log('8. Restart triggered');
+      console.log('8. Restart');
       block = { x: 100, y: 300, size: 30, velocity: 0, gravity: 0.5, jump: -10 };
       pillars = [];
       score = 0;
@@ -212,7 +207,7 @@
         console.log('9. Game loop stopped');
         return;
       }
-      console.log('9. Game loop frame:', frameCount);
+      console.log('9. Frame:', frameCount);
 
       // Update block
       block.velocity += block.gravity;
@@ -234,7 +229,7 @@
           block.x < pillar.x + pillarWidth &&
           (block.y < pillar.gapY || block.y + block.size > pillar.gapY + pillarGap)
         ) {
-          console.log('11. Collision with pillar', index, '- x:', pillar.x, 'gapY:', pillar.gapY);
+          console.log('11. Collision with pillar', index, '- x:', pillar.x);
           endGame();
           return;
         }
@@ -247,7 +242,7 @@
       pillars = pillars.filter(pillar => pillar.x + pillarWidth > 0);
 
       // Draw
-      ctx.fillStyle = '#1a1a1a'; // Dark gray to confirm canvas
+      ctx.fillStyle = '#1a1a1a';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = '#ff0000';
       ctx.fillRect(block.x, block.y, block.size, block.size);
@@ -255,7 +250,7 @@
       pillars.forEach((pillar, index) => {
         ctx.fillRect(pillar.x, 0, pillarWidth, pillar.gapY);
         ctx.fillRect(pillar.x, pillar.gapY + pillarGap, pillarWidth, canvas.height - (pillar.gapY + pillarGap));
-        console.log('13. Drawing pillar', index, '- x:', pillar.x, 'gapY:', pillar.gapY);
+        console.log('13. Drawing pillar', index, '- x:', pillar.x);
       });
 
       frameCount++;
