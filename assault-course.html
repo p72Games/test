@@ -97,6 +97,35 @@
       opacity: 0.8;
       margin-top: 10px;
     }
+    #leaderboard {
+      margin: 20px auto;
+      width: 300px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      box-shadow: 0 0 12px var(--accent);
+      padding: 10px;
+    }
+    #leaderboard h2 {
+      font-size: 20px;
+      color: #a0fff2;
+      text-shadow: 0 0 5px var(--fg);
+      margin: 0 0 10px;
+    }
+    #leaderboard table {
+      width: 100%;
+      border-collapse: collapse;
+      color: var(--fg);
+    }
+    #leaderboard th, #leaderboard td {
+      padding: 8px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--accent);
+    }
+    #leaderboard th {
+      color: var(--accent);
+      text-shadow: 0 0 3px var(--fg);
+    }
     a {
       color: var(--accent);
       text-decoration: none;
@@ -121,6 +150,19 @@
     </div>
   </div>
   <p id="instructions">Press Space or Click to jump!</p>
+  <div id="leaderboard">
+    <h2>Leaderboard</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Name</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboard-body"></tbody>
+    </table>
+  </div>
   <a href="index.html">Back to Arcade</a>
 
   <script>
@@ -130,6 +172,7 @@
     const gameOverScreen = document.getElementById('game-over');
     const finalScoreDisplay = document.getElementById('final-score');
     const restartBtn = document.getElementById('restart-btn');
+    const leaderboardBody = document.getElementById('leaderboard-body');
 
     // Game variables
     let block = { x: 100, y: 300, size: 30, velocity: 0, gravity: 0.5, jump: -10 };
@@ -140,6 +183,32 @@
     const pillarGap = 150;
     const pillarSpeed = 2;
     let frameCount = 0;
+
+    // Leaderboard
+    let leaderboard = JSON.parse(localStorage.getItem('assaultCourseLeaderboard')) || [];
+
+    function updateLeaderboard(score) {
+      if (score === 0) return; // Skip if score is 0
+      const name = prompt('New high score! Enter your name:') || 'Anonymous';
+      leaderboard.push({ name, score });
+      leaderboard.sort((a, b) => b.score - a.score); // Sort descending
+      leaderboard = leaderboard.slice(0, 5); // Keep top 5
+      localStorage.setItem('assaultCourseLeaderboard', JSON.stringify(leaderboard));
+      displayLeaderboard();
+    }
+
+    function displayLeaderboard() {
+      leaderboardBody.innerHTML = '';
+      leaderboard.forEach((entry, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${entry.name}</td>
+          <td>${entry.score}</td>
+        `;
+        leaderboardBody.appendChild(row);
+      });
+    }
 
     // Add pillar
     function addPillar() {
@@ -236,10 +305,12 @@
       gameRunning = false;
       gameOverScreen.style.display = 'block';
       finalScoreDisplay.textContent = score;
+      updateLeaderboard(score);
     }
 
     // Start game
     addPillar();
+    displayLeaderboard();
     gameLoop();
   </script>
 </body>
