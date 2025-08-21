@@ -126,8 +126,15 @@
   <a href="index.html">Back to Arcade</a>
 
   <script>
+    // Initialize canvas
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('Canvas context not supported');
+      alert('Sorry, your browser does not support the game canvas.');
+      return;
+    }
+
     const scoreDisplay = document.getElementById('score');
     const gameOverScreen = document.getElementById('game-over');
     const finalScoreDisplay = document.getElementById('final-score');
@@ -139,12 +146,12 @@
     let score = 0;
     let gameRunning = true;
     const pillarWidth = 50;
-    const pillarGap = 120; // 2x double block height (60px * 2) for playability
+    const pillarGap = 150; // Wider than 2x double block height (60px * 2) for easier play
     const pillarSpeed = 2;
     let frameCount = 0;
 
     // High score
-    let highScore = localStorage.getItem('assaultCourseHighScore') || 0;
+    let highScore = parseInt(localStorage.getItem('assaultCourseHighScore')) || 0;
     scoreDisplay.textContent = `High Score: ${highScore}`;
 
     function updateHighScore() {
@@ -157,8 +164,8 @@
 
     // Add pillar
     function addPillar() {
-      const minGapY = 120; // Ensure gap starts low enough
-      const maxGapY = canvas.height - pillarGap - 120; // Ensure gap fits on screen
+      const minGapY = 150; // Ensure gap starts low enough
+      const maxGapY = canvas.height - pillarGap - 150; // Ensure gap fits (600 - 150 - 150 = 300)
       const gapY = Math.random() * (maxGapY - minGapY) + minGapY;
       pillars.push({
         x: canvas.width,
@@ -168,21 +175,22 @@
     }
 
     // Handle input
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && gameRunning) {
-        block.velocity = block.jump;
-      }
-    });
-    canvas.addEventListener('click', () => {
+    function jump() {
       if (gameRunning) {
         block.velocity = block.jump;
       }
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault(); // Prevent page scrolling
+        jump();
+      }
     });
+    canvas.addEventListener('click', jump);
 
     // Restart game
     restartBtn.addEventListener('click', () => {
-      block.y = 300;
-      block.velocity = 0;
+      block = { x: 100, y: 300, size: 30, velocity: 0, gravity: 0.5, jump: -10 };
       pillars = [];
       score = 0;
       gameOverScreen.style.display = 'none';
@@ -196,45 +204,76 @@
     function gameLoop() {
       if (!gameRunning) return;
 
-      // Update block
-      block.velocity += block.gravity;
-      block.y += block.velocity;
-      if (block.y + block.size > canvas.height || block.y < 0) {
+      try {
+        // Update block
+        block.velocity += block.gravity;
+        block.y += block.velocity;
+        if (block.y + block.size > canvas.height || block.y < 0) {
+          endGame();
+          return;
+        }
+
+        // Update pillars
+        if (frameCount % 90 === 0) {
+          addPillar();
+        }
+        pillars.forEach(pillar => {
+          pillar.x -= pillarSpeed;
+          // Check collision
+          if (
+            block.x + block.size > pillar.x &&
+            block.x < pillar.x + pillarWidth &&
+            (block.y < pillar.gapY || block.y + block.size > pillar.gapY + pillarGap)
+          ) {
+            endGame();
+            return;
+          }
+          // Score points
+          if (!pillar.passed && block.x > pillar.x + pillarWidth) {
+            score++;
+            pillar.passed = true;
+          }
+        });
+        pillars = pillars.filter(pillar => pillar.x + pillarWidth > 0);
+
+        // Draw
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Draw block
+        ctx.fillStyle = '#ff0000'; // Red block
+        ctx.shadowColor = 'var(--fg)';
+        ctx.shadowBlur = 10;
+        ctx.fillRect(block.x, block.y, block.size, block.size);
+        ctx.shadowBlur = 0;
+        // Draw pillars
+        ctx.fillStyle = 'var(--fg)';
+        pillars.forEach(pillar => {
+          ctx.fillRect(pillar.x, 0, pillarWidth, pillar.gapY);
+          ctx.fillRect(pillar.x, pillar.gapY + pillarGap, pillarWidth, canvas.height - (pillar.gapY + pillarGap));
+        });
+
+        frameCount++;
+        requestAnimationFrame(gameLoop);
+      } catch (error) {
+        console.error('Game loop error:', error);
         endGame();
       }
+    }
 
-      // Update pillars
-      if (frameCount % 90 === 0) {
-        addPillar();
-      }
-      pillars.forEach(pillar => {
-        pillar.x -= pillarSpeed;
-        // Check collision
-        if (
-          block.x + block.size > pillar.x &&
-          block.x < pillar.x + pillarWidth &&
-          (block.y < pillar.gapY || block.y + block.size > pillar.gapY + pillarGap)
-        ) {
-          endGame();
-        }
-        // Score points
-        if (!pillar.passed && block.x > pillar.x + pillarWidth) {
-          score++;
-          pillar.passed = true;
-        }
-      });
-      pillars = pillars.filter(pillar => pillar.x + pillarWidth > 0);
+    function endGame() {
+      gameRunning = false;
+      gameOverScreen.style.display = 'block';
+      finalScoreDisplay.textContent = score;
+      updateHighScore();
+    }
 
-      // Draw
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // Draw block
-      ctx.fillStyle = '#ff0000'; // Red block
-      ctx.shadowColor = 'var(--fg)';
-      ctx.shadowBlur = 10;
-      ctx.fillRect(block.x, block.y, block.size, block.size);
-      ctx.shadowBlur = 0;
-      // Draw pillars
-      ctx.fillStyle = 'var(--fg)';
-      pillars.forEach(pillar => {
-        ctx.fillRect(pillar.x, 0, pillarWidth, pillar.gapY);
-        ctx.fillRect(pillar.x, pillar.gapY + pillarGap, pillarWidth, canvas
+    // Start game
+    try {
+      addPillar();
+      gameLoop();
+    } catch (error) {
+      console.error('Game start error:', error);
+      alert('Failed to start the game. Please check the console for errors.');
+    }
+  </script>
+</body>
+</html>
