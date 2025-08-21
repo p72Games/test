@@ -11,9 +11,6 @@
       --accent: #00e5ff;
       --danger: #ff3366;
     }
-    * {
-      box-sizing: border-box;
-    }
     body {
       margin: 0;
       background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
@@ -142,9 +139,9 @@
     const pillarSpeed = 2;
     let frameCount = 0;
 
-    // Gap settings (bigger gaps now)
-    const minGap = 200;   // minimum gap always 200px
-    const maxGap = 300;   // maximum gap for variety
+    // Gap settings (now mixed: some narrow, some wide)
+    const minGap = 120;   // never too tiny
+    const maxGap = 280;   // nice wide ones too
 
     // High score
     let highScore = localStorage.getItem('assaultCourseHighScore') || 0;
@@ -161,11 +158,9 @@
     // Add pillar
     function addPillar() {
       const gapSize = Math.random() * (maxGap - minGap) + minGap;
-
       const minGapY = 50;
       const maxGapY = canvas.height - gapSize - 50;
       const gapY = Math.random() * (maxGapY - minGapY) + minGapY;
-
       pillars.push({ x: canvas.width, gapY: gapY, gapSize: gapSize, passed: false });
     }
 
@@ -231,18 +226,23 @@
 
       // Draw
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       // Draw block
       ctx.fillStyle = '#ff0000';
       ctx.shadowColor = 'var(--fg)';
       ctx.shadowBlur = 10;
       ctx.fillRect(block.x, block.y, block.size, block.size);
       ctx.shadowBlur = 0;
-      // Draw pillars
-      ctx.fillStyle = 'var(--fg)';
+
+      // Draw neon blue pillars
+      ctx.fillStyle = '#00e5ff';
+      ctx.shadowColor = '#00e5ff';
+      ctx.shadowBlur = 20;
       pillars.forEach(pillar => {
         ctx.fillRect(pillar.x, 0, pillarWidth, pillar.gapY);
         ctx.fillRect(pillar.x, pillar.gapY + pillar.gapSize, pillarWidth, canvas.height);
       });
+      ctx.shadowBlur = 0;
 
       frameCount++;
       requestAnimationFrame(gameLoop);
