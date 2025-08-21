@@ -66,6 +66,28 @@ h1{
   color:var(--accent);
   opacity:0.8;
 }
+.why-button {
+  background: linear-gradient(45deg, var(--accent), var(--fg));
+  border: 3px solid var(--fg);
+  border-radius: 24px;
+  padding: 15px 30px;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  text-align: center;
+  box-shadow: 0 0 15px var(--fg), 0 0 25px var(--accent);
+  margin: 30px auto;
+  max-width: 300px;
+}
+.why-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px var(--fg), 0 0 30px var(--accent);
+}
+.why-button h2 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--bg);
+  text-shadow: 0 0 5px var(--accent);
+}
 footer{
   margin-top:30px;
   font-size:14px;
@@ -87,7 +109,7 @@ footer{
     <p>Guess if the quote is from the Bible or not!</p>
   </div>
   <div class="game-card" onclick="window.location.href='assault-course.html'">
-    <h2>🏃 Assault Course</h2>
+    <h2>🟥 Assault Course</h2>
     <p>Race through obstacles in this thrilling challenge!</p>
   </div>
   <div class="game-card" onclick="window.location.href='pong.html'">
@@ -99,7 +121,7 @@ footer{
     <p>Outsmart your opponent in this classic grid game!</p>
   </div>
   <div class="game-card" onclick="window.location.href='bible-trivia.html'">
-    <h2>🙏 Bible Trivia</h2>
+    <h2>📖 Bible Trivia</h2>
     <p>Test your knowledge with fun Bible questions!</p>
   </div>
 </div>
@@ -113,7 +135,11 @@ footer{
      data-full-width-responsive="true"></ins>
 <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
-<footer>© Dominion Games</footer>
+<div class="why-button" onclick="window.location.href='why-dominion.html'">
+  <h2>Why Dominion Games?</h2>
+</div>
+
+<footer>Dominion Games</footer>
 
 </body>
 </html>
