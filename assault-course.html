@@ -45,6 +45,7 @@
       display: block;
       width: 100%;
       height: 100%;
+      background: #1a1a1a; /* Visible background to confirm canvas */
     }
     #score {
       position: absolute;
@@ -133,7 +134,7 @@
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       console.error('2. Canvas context not supported');
-      alert('Error: Your browser does not support HTML5 Canvas. Please try a modern browser like Chrome or Firefox.');
+      alert('Error: Your browser does not support HTML5 Canvas. Please use Chrome, Firefox, or Edge.');
       return;
     }
     console.log('2. Canvas initialized');
@@ -147,7 +148,7 @@
     let block = { x: 100, y: 300, size: 30, velocity: 0, gravity: 0.5, jump: -10 };
     let pillars = [];
     let score = 0;
-    let gameRunning = false; // Start as false to ensure proper initialization
+    let gameRunning = false;
     const pillarWidth = 50;
     const pillarGap = 150; // Wide gap for 60px x 60px block
     const pillarSpeed = 2;
@@ -167,9 +168,8 @@
       }
     }
 
-    // Add pillar
     function addPillar() {
-      const minGapY = 150; // Ensure gap starts low enough
+      const minGapY = 150;
       const maxGapY = canvas.height - pillarGap - 150; // 600 - 150 - 150 = 300
       const gapY = Math.random() * (maxGapY - minGapY) + minGapY;
       pillars.push({
@@ -180,11 +180,10 @@
       console.log('5. Pillar added - x:', canvas.width, 'gapY:', gapY);
     }
 
-    // Handle input
     function jump() {
       if (gameRunning) {
         block.velocity = block.jump;
-        console.log('6. Jump triggered - velocity:', block.velocity, 'y:', block.y);
+        console.log('6. Jump - velocity:', block.velocity, 'y:', block.y);
       }
     }
     document.addEventListener('keydown', (e) => {
@@ -196,7 +195,6 @@
     canvas.addEventListener('click', jump);
     console.log('7. Input listeners added');
 
-    // Restart game
     restartBtn.addEventListener('click', () => {
       console.log('8. Restart triggered');
       block = { x: 100, y: 300, size: 30, velocity: 0, gravity: 0.5, jump: -10 };
@@ -209,7 +207,6 @@
       gameLoop();
     });
 
-    // Game loop
     function gameLoop() {
       if (!gameRunning) {
         console.log('9. Game loop stopped');
@@ -221,7 +218,7 @@
       block.velocity += block.gravity;
       block.y += block.velocity;
       if (block.y + block.size > canvas.height || block.y < 0) {
-        console.log('10. Collision with canvas bounds - y:', block.y);
+        console.log('10. Collision with bounds - y:', block.y);
         endGame();
         return;
       }
@@ -232,7 +229,6 @@
       }
       pillars.forEach((pillar, index) => {
         pillar.x -= pillarSpeed;
-        // Check collision
         if (
           block.x + block.size > pillar.x &&
           block.x < pillar.x + pillarWidth &&
@@ -242,25 +238,19 @@
           endGame();
           return;
         }
-        // Score points
         if (!pillar.passed && block.x > pillar.x + pillarWidth) {
           score++;
           pillar.passed = true;
-          console.log('12. Score incremented:', score);
+          console.log('12. Score:', score);
         }
       });
       pillars = pillars.filter(pillar => pillar.x + pillarWidth > 0);
 
       // Draw
-      ctx.fillStyle = '#000000'; // Clear with black
+      ctx.fillStyle = '#1a1a1a'; // Dark gray to confirm canvas
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      // Draw block
       ctx.fillStyle = '#ff0000';
-      ctx.shadowColor = 'var(--fg)';
-      ctx.shadowBlur = 10;
       ctx.fillRect(block.x, block.y, block.size, block.size);
-      ctx.shadowBlur = 0;
-      // Draw pillars
       ctx.fillStyle = 'var(--fg)';
       pillars.forEach((pillar, index) => {
         ctx.fillRect(pillar.x, 0, pillarWidth, pillar.gapY);
@@ -280,7 +270,6 @@
       console.log('14. Game over - score:', score);
     }
 
-    // Start game
     console.log('15. Starting game');
     gameRunning = true;
     addPillar();
