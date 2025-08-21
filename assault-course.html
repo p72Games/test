@@ -1,133 +1,257 @@
-<script>
-  const canvas = document.getElementById('game-canvas');
-  const ctx = canvas.getContext('2d');
-  const scoreDisplay = document.getElementById('score');
-  const gameOverScreen = document.getElementById('game-over');
-  const finalScoreDisplay = document.getElementById('final-score');
-  const restartBtn = document.getElementById('restart-btn');
-
-  // Game variables
-  let block = { x: 100, y: 300, size: 30, velocity: 0, gravity: 0.5, jump: -10 };
-  let pillars = [];
-  let score = 0;
-  let gameRunning = true;
-  const pillarWidth = 50;
-  const pillarGap = 150; // Easier: much bigger gap
-  const pillarSpeed = 2;
-  let frameCount = 0;
-
-  // High score
-  let highScore = localStorage.getItem('assaultCourseHighScore') || 0;
-  scoreDisplay.textContent = `Score: ${score} | High: ${highScore}`;
-
-  function updateHighScore() {
-    if (score > highScore) {
-      highScore = score;
-      localStorage.setItem('assaultCourseHighScore', highScore);
-      scoreDisplay.textContent = `Score: ${score} | High: ${highScore}`;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assault Course - Dominion Games</title>
+  <style>
+    :root {
+      --bg: #000;
+      --fg: #00ff88;
+      --accent: #00e5ff;
+      --danger: #ff3366;
     }
-  }
-
-  // Add pillar
-  function addPillar() {
-    // Keep enough space for the gap fully visible
-    const minGapY = 50; 
-    const maxGapY = canvas.height - pillarGap - 50;
-    const gapY = Math.random() * (maxGapY - minGapY) + minGapY;
-    pillars.push({
-      x: canvas.width,
-      gapY: gapY,
-      passed: false
-    });
-  }
-
-  // Handle input
-  document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && gameRunning) {
-      block.velocity = block.jump;
+    * {
+      box-sizing: border-box;
     }
-  });
-  canvas.addEventListener('click', () => {
-    if (gameRunning) {
-      block.velocity = block.jump;
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
+      color: var(--fg);
+      font-family: "Courier New", monospace;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
     }
-  });
+    h1 {
+      font-size: clamp(24px, 5vw, 36px);
+      margin-bottom: 10px;
+      color: #a0fff2;
+      text-shadow: 0 0 10px var(--fg), 0 0 24px var(--accent);
+    }
+    #game-container {
+      position: relative;
+      width: 400px;
+      height: 600px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      box-shadow: 0 0 12px var(--accent);
+    }
+    #game-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    #score {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 20px;
+      color: var(--fg);
+      text-shadow: 0 0 5px var(--accent);
+    }
+    #game-over {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid var(--danger);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 15px var(--danger);
+      color: var(--fg);
+      width: 80%;
+      max-width: 350px;
+    }
+    #game-over h2 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      color: var(--danger);
+    }
+    #game-over p {
+      margin: 0 0 20px;
+      font-size: 18px;
+    }
+    #restart-btn {
+      background: var(--accent);
+      border: 2px solid var(--fg);
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-family: "Courier New", monospace;
+      font-size: 16px;
+      color: var(--bg);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #restart-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px var(--fg);
+    }
+    #instructions {
+      font-size: 14px;
+      color: var(--accent);
+      opacity: 0.8;
+      margin-top: 10px;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 14px;
+      margin-top: 10px;
+      display: inline-block;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Assault Course</h1>
+  <div id="game-container">
+    <canvas id="game-canvas" width="400" height="600"></canvas>
+    <div id="score">Score: 0 | High: 0</div>
+    <div id="game-over">
+      <h2>Game Over</h2>
+      <p>Score: <span id="final-score">0</span></p>
+      <button id="restart-btn">Restart</button>
+    </div>
+  </div>
+  <p id="instructions">Press Space or Click to jump!</p>
+  <a href="index.html">Back to Arcade</a>
 
-  // Restart game
-  restartBtn.addEventListener('click', () => {
-    block.y = 300;
-    block.velocity = 0;
-    pillars = [];
-    score = 0;
+  <script>
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    const scoreDisplay = document.getElementById('score');
+    const gameOverScreen = document.getElementById('game-over');
+    const finalScoreDisplay = document.getElementById('final-score');
+    const restartBtn = document.getElementById('restart-btn');
+
+    // Game variables
+    let block = { x: 100, y: 300, size: 30, velocity: 0, gravity: 0.5, jump: -10 };
+    let pillars = [];
+    let score = 0;
+    let gameRunning = true;
+    const pillarWidth = 50;
+    const pillarGap = 150; // easier: larger gap
+    const pillarSpeed = 2;
+    let frameCount = 0;
+
+    // High score
+    let highScore = localStorage.getItem('assaultCourseHighScore') || 0;
     scoreDisplay.textContent = `Score: ${score} | High: ${highScore}`;
-    gameOverScreen.style.display = 'none';
-    gameRunning = true;
-    frameCount = 0;
-    addPillar();
-    gameLoop();
-  });
 
-  // Game loop
-  function gameLoop() {
-    if (!gameRunning) return;
-
-    // Update block
-    block.velocity += block.gravity;
-    block.y += block.velocity;
-    if (block.y + block.size > canvas.height || block.y < 0) {
-      endGame();
+    function updateHighScore() {
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('assaultCourseHighScore', highScore);
+        scoreDisplay.textContent = `Score: ${score} | High: ${highScore}`;
+      }
     }
 
-    // Update pillars
-    if (frameCount % 90 === 0) {
+    // Add pillar
+    function addPillar() {
+      const minGapY = 50;
+      const maxGapY = canvas.height - pillarGap - 50;
+      const gapY = Math.random() * (maxGapY - minGapY) + minGapY;
+      pillars.push({ x: canvas.width, gapY: gapY, passed: false });
+    }
+
+    // Handle input
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && gameRunning) {
+        block.velocity = block.jump;
+      }
+    });
+    canvas.addEventListener('click', () => {
+      if (gameRunning) {
+        block.velocity = block.jump;
+      }
+    });
+
+    // Restart game
+    restartBtn.addEventListener('click', () => {
+      block.y = 300;
+      block.velocity = 0;
+      pillars = [];
+      score = 0;
+      scoreDisplay.textContent = `Score: ${score} | High: ${highScore}`;
+      gameOverScreen.style.display = 'none';
+      gameRunning = true;
+      frameCount = 0;
       addPillar();
-    }
-    pillars.forEach(pillar => {
-      pillar.x -= pillarSpeed;
-      // Check collision
-      if (
-        block.x + block.size > pillar.x &&
-        block.x < pillar.x + pillarWidth &&
-        (block.y < pillar.gapY || block.y + block.size > pillar.gapY + pillarGap)
-      ) {
+      gameLoop();
+    });
+
+    // Game loop
+    function gameLoop() {
+      if (!gameRunning) return;
+
+      // Update block
+      block.velocity += block.gravity;
+      block.y += block.velocity;
+      if (block.y + block.size > canvas.height || block.y < 0) {
         endGame();
       }
-      // Score points
-      if (!pillar.passed && block.x > pillar.x + pillarWidth) {
-        score++;
-        scoreDisplay.textContent = `Score: ${score} | High: ${highScore}`;
-        pillar.passed = true;
+
+      // Update pillars
+      if (frameCount % 90 === 0) {
+        addPillar();
       }
-    });
-    pillars = pillars.filter(pillar => pillar.x + pillarWidth > 0);
+      pillars.forEach(pillar => {
+        pillar.x -= pillarSpeed;
+        // Check collision
+        if (
+          block.x + block.size > pillar.x &&
+          block.x < pillar.x + pillarWidth &&
+          (block.y < pillar.gapY || block.y + block.size > pillar.gapY + pillarGap)
+        ) {
+          endGame();
+        }
+        // Score points
+        if (!pillar.passed && block.x > pillar.x + pillarWidth) {
+          score++;
+          scoreDisplay.textContent = `Score: ${score} | High: ${highScore}`;
+          pillar.passed = true;
+        }
+      });
+      pillars = pillars.filter(pillar => pillar.x + pillarWidth > 0);
 
-    // Draw
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Draw block
-    ctx.fillStyle = '#ff0000'; // Red block
-    ctx.shadowColor = 'var(--fg)';
-    ctx.shadowBlur = 10;
-    ctx.fillRect(block.x, block.y, block.size, block.size);
-    ctx.shadowBlur = 0;
-    // Draw pillars
-    ctx.fillStyle = 'var(--fg)';
-    pillars.forEach(pillar => {
-      ctx.fillRect(pillar.x, 0, pillarWidth, pillar.gapY);
-      ctx.fillRect(pillar.x, pillar.gapY + pillarGap, pillarWidth, canvas.height);
-    });
+      // Draw
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Draw block
+      ctx.fillStyle = '#ff0000';
+      ctx.shadowColor = 'var(--fg)';
+      ctx.shadowBlur = 10;
+      ctx.fillRect(block.x, block.y, block.size, block.size);
+      ctx.shadowBlur = 0;
+      // Draw pillars
+      ctx.fillStyle = 'var(--fg)';
+      pillars.forEach(pillar => {
+        ctx.fillRect(pillar.x, 0, pillarWidth, pillar.gapY);
+        ctx.fillRect(pillar.x, pillar.gapY + pillarGap, pillarWidth, canvas.height);
+      });
 
-    frameCount++;
-    requestAnimationFrame(gameLoop);
-  }
+      frameCount++;
+      requestAnimationFrame(gameLoop);
+    }
 
-  function endGame() {
-    gameRunning = false;
-    gameOverScreen.style.display = 'block';
-    finalScoreDisplay.textContent = score;
-    updateHighScore();
-  }
+    function endGame() {
+      gameRunning = false;
+      gameOverScreen.style.display = 'block';
+      finalScoreDisplay.textContent = score;
+      updateHighScore();
+    }
 
-  // Start game
-  addPillar();
-  gameLoop();
-</script>
+    // Start game
+    addPillar();
+    gameLoop();
+  </script>
+</body>
+</html>
