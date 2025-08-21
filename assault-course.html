@@ -126,6 +126,7 @@
   <a href="index.html">Back to Arcade</a>
 
   <script>
+    console.log('Script started');
     // Initialize canvas
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
@@ -134,6 +135,7 @@
       alert('Sorry, your browser does not support the game canvas.');
       return;
     }
+    console.log('Canvas initialized');
 
     const scoreDisplay = document.getElementById('score');
     const gameOverScreen = document.getElementById('game-over');
@@ -146,38 +148,42 @@
     let score = 0;
     let gameRunning = true;
     const pillarWidth = 50;
-    const pillarGap = 150; // Wider than 2x double block height (60px * 2) for easier play
+    const pillarGap = 150; // Wider gap for easier play (2.5x 60px)
     const pillarSpeed = 2;
     let frameCount = 0;
 
     // High score
     let highScore = parseInt(localStorage.getItem('assaultCourseHighScore')) || 0;
     scoreDisplay.textContent = `High Score: ${highScore}`;
+    console.log('Initial high score:', highScore);
 
     function updateHighScore() {
       if (score > highScore) {
         highScore = score;
         localStorage.setItem('assaultCourseHighScore', highScore);
         scoreDisplay.textContent = `High Score: ${highScore}`;
+        console.log('New high score:', highScore);
       }
     }
 
     // Add pillar
     function addPillar() {
       const minGapY = 150; // Ensure gap starts low enough
-      const maxGapY = canvas.height - pillarGap - 150; // Ensure gap fits (600 - 150 - 150 = 300)
+      const maxGapY = canvas.height - pillarGap - 150; // 600 - 150 - 150 = 300
       const gapY = Math.random() * (maxGapY - minGapY) + minGapY;
       pillars.push({
         x: canvas.width,
         gapY: gapY,
         passed: false
       });
+      console.log('Pillar added at x:', canvas.width, 'gapY:', gapY);
     }
 
     // Handle input
     function jump() {
       if (gameRunning) {
         block.velocity = block.jump;
+        console.log('Jump triggered, velocity:', block.velocity);
       }
     }
     document.addEventListener('keydown', (e) => {
@@ -187,6 +193,7 @@
       }
     });
     canvas.addEventListener('click', jump);
+    console.log('Input listeners added');
 
     // Restart game
     restartBtn.addEventListener('click', () => {
@@ -198,17 +205,23 @@
       frameCount = 0;
       addPillar();
       gameLoop();
+      console.log('Game restarted');
     });
 
     // Game loop
     function gameLoop() {
-      if (!gameRunning) return;
+      if (!gameRunning) {
+        console.log('Game loop stopped');
+        return;
+      }
 
       try {
+        console.log('Game loop frame:', frameCount);
         // Update block
         block.velocity += block.gravity;
         block.y += block.velocity;
         if (block.y + block.size > canvas.height || block.y < 0) {
+          console.log('Collision with canvas bounds, y:', block.y);
           endGame();
           return;
         }
@@ -225,6 +238,7 @@
             block.x < pillar.x + pillarWidth &&
             (block.y < pillar.gapY || block.y + block.size > pillar.gapY + pillarGap)
           ) {
+            console.log('Collision with pillar, x:', pillar.x, 'gapY:', pillar.gapY);
             endGame();
             return;
           }
@@ -232,6 +246,7 @@
           if (!pillar.passed && block.x > pillar.x + pillarWidth) {
             score++;
             pillar.passed = true;
+            console.log('Score incremented:', score);
           }
         });
         pillars = pillars.filter(pillar => pillar.x + pillarWidth > 0);
@@ -239,7 +254,7 @@
         // Draw
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         // Draw block
-        ctx.fillStyle = '#ff0000'; // Red block
+        ctx.fillStyle = '#ff0000';
         ctx.shadowColor = 'var(--fg)';
         ctx.shadowBlur = 10;
         ctx.fillRect(block.x, block.y, block.size, block.size);
@@ -264,10 +279,12 @@
       gameOverScreen.style.display = 'block';
       finalScoreDisplay.textContent = score;
       updateHighScore();
+      console.log('Game over, score:', score);
     }
 
     // Start game
     try {
+      console.log('Starting game');
       addPillar();
       gameLoop();
     } catch (error) {
