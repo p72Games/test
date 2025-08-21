@@ -142,9 +142,9 @@
     const pillarSpeed = 2;
     let frameCount = 0;
 
-    // Gap settings
-    const minGap = block.size * 3;  // minimum gap = 3 block heights (90px)
-    const maxGap = 250;             // maximum gap (easy play)
+    // Gap settings (bigger gaps now)
+    const minGap = 200;   // minimum gap always 200px
+    const maxGap = 300;   // maximum gap for variety
 
     // High score
     let highScore = localStorage.getItem('assaultCourseHighScore') || 0;
