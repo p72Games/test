@@ -1,124 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Bible or Not? - Dominion Games</title>
-
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248" crossorigin="anonymous"></script>
-
-<style>
-  :root{
-    --bg:#000;
-    --fg:#00ff88;
-    --accent:#00e5ff;
-    --danger:#ff3366;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
-    color:var(--fg);
-    font-family: "Courier New", monospace;
-    text-align:center;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-start;
-    padding:10px;
-  }
-  .frame{
-    width:min(900px, 94vw);
-    border:2px solid var(--accent);
-    border-radius:16px;
-    padding:20px;
-    margin-top:10px;
-    background: rgba(0,0,0,.6);
-    box-shadow: 0 0 12px var(--accent), inset 0 0 20px rgba(0,229,255,.2);
-  }
-  h1{
-    margin:0 0 14px;
-    font-size: clamp(26px, 6vw, 40px);
-    color:#a0fff2;
-    text-shadow: 0 0 10px var(--fg), 0 0 24px var(--accent);
-  }
-  .menu, .game{display:none}
-  .menu.active, .game.active{display:block}
-  .btn{
-    background:#031416;
-    color:var(--fg);
-    border:2px solid var(--accent);
-    padding:10px 18px;
-    border-radius:10px;
-    margin:6px;
-    cursor:pointer;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-    box-shadow: 0 0 12px rgba(0,229,255,.35);
-  }
-  .btn.red{border-color:var(--danger); color:#ffdbe6;}
-  #score{margin:6px; font-size:20px}
-  #questionBox{
-    font-size:18px;
-    margin:20px auto;
-    max-width:90%;
-  }
-  footer{
-    margin-top:20px;
-    font-size:14px;
-    opacity:.7;
-  }
-</style>
-</head>
-<body>
-  <div class="frame">
-    <h1>Bible or Not?</h1>
-
-    <div id="menu" class="menu active">
-      <p>Enter your name to start:</p>
-      <input id="playerName" type="text" maxlength="20" placeholder="Name">
-      <div>
-        <button class="btn" onclick="startGame()">Start Game</button>
-      </div>
-      <h3>🏆 Leaderboard</h3>
-      <ol id="leaderList"></ol>
-    </div>
-
-    <div id="game" class="game">
-      <div id="score">Score: 0</div>
-      <div id="questionBox">Question appears here</div>
-      <div>
-        <button class="btn" onclick="answer(true)">Bible ✅</button>
-        <button class="btn red" onclick="answer(false)">Not ❌</button>
-      </div>
-      <div>
-        <button class="btn" onclick="submitScore()">Submit Score</button>
-        <button class="btn" onclick="goHome()">Home</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- AdSense placeholder -->
-  <ins class="adsbygoogle"
-      style="display:block; margin:20px auto;"
-      data-ad-client="ca-pub-7172412535146248"
-      data-ad-slot="1234567890"
-      data-ad-format="auto"
-      data-full-width-responsive="true"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-
-  <footer>© Dominion Games</footer>
-
 <script>
-let playerName = "";
-let score = 0;
-let questionIndex = 0;
+let playerName, score, questionIndex;
 
-const questions = [
-  // --- Bible (True) ---
+// --- BIG QUESTION BANK (100+) ---
+let questions = [
+  // === Bible Quotes ===
   {text:"In the beginning God created the heavens and the earth.", bible:true},
   {text:"The Lord is my shepherd; I shall not want.", bible:true},
   {text:"Love your neighbor as yourself.", bible:true},
@@ -129,20 +14,6 @@ const questions = [
   {text:"Man shall not live by bread alone.", bible:true},
   {text:"Be strong and courageous. Do not be afraid.", bible:true},
   {text:"The fear of the Lord is the beginning of wisdom.", bible:true},
-
-  // --- Not Bible (False, but sounds biblical) ---
-  {text:"God helps those who help themselves.", bible:false},
-  {text:"Cleanliness is next to godliness.", bible:false},
-  {text:"To thine own self be true.", bible:false},
-  {text:"The Force will be with you, always.", bible:false},
-  {text:"Do or do not, there is no try.", bible:false},
-  {text:"One ring to rule them all, one ring to find them.", bible:false},
-  {text:"Charity begins at home.", bible:false},
-  {text:"The needs of the many outweigh the needs of the few.", bible:false},
-  {text:"Winter is coming.", bible:false},
-  {text:"Speak, friend, and enter.", bible:false},
-
-  // --- Bible (True) ---
   {text:"Let there be light.", bible:true},
   {text:"Honor your father and your mother.", bible:true},
   {text:"You shall not murder.", bible:true},
@@ -153,20 +24,6 @@ const questions = [
   {text:"Faith without works is dead.", bible:true},
   {text:"The joy of the Lord is your strength.", bible:true},
   {text:"Cast all your anxiety on Him because He cares for you.", bible:true},
-
-  // --- Not Bible (False, tricky ones) ---
-  {text:"Money is the root of all evil.", bible:false},
-  {text:"The lion shall lie down with the lamb.", bible:false},
-  {text:"Spare the rod, spoil the child.", bible:false},
-  {text:"Neither a borrower nor a lender be.", bible:false},
-  {text:"May the Force be with you.", bible:false},
-  {text:"Fear leads to anger, anger leads to hate, hate leads to suffering.", bible:false},
-  {text:"Even the smallest person can change the course of the future.", bible:false},
-  {text:"A wizard is never late, nor is he early. He arrives precisely when he means to.", bible:false},
-  {text:"Hell hath no fury like a woman scorned.", bible:false},
-  {text:"All that glitters is not gold.", bible:false},
-
-  // --- More Bible (True) ---
   {text:"The truth will set you free.", bible:true},
   {text:"I am the way, the truth, and the life.", bible:true},
   {text:"Be still, and know that I am God.", bible:true},
@@ -177,34 +34,118 @@ const questions = [
   {text:"Ask and it will be given to you; seek and you will find.", bible:true},
   {text:"The stone the builders rejected has become the cornerstone.", bible:true},
   {text:"Our Father in heaven, hallowed be your name.", bible:true},
+  {text:"The Lord bless you and keep you; the Lord make his face shine on you.", bible:true},
+  {text:"I can do all things through Christ who strengthens me.", bible:true},
+  {text:"For we walk by faith, not by sight.", bible:true},
+  {text:"The Lord is near to the brokenhearted and saves the crushed in spirit.", bible:true},
+  {text:"With God all things are possible.", bible:true},
+  {text:"Do not let your hearts be troubled. Trust in God; trust also in me.", bible:true},
+  {text:"Forgive us our debts, as we also have forgiven our debtors.", bible:true},
+  {text:"The righteous shall live by faith.", bible:true},
+  {text:"God is love.", bible:true},
+  {text:"Greater love has no one than this: to lay down one’s life for one’s friends.", bible:true},
+  {text:"The Lord is good to all; he has compassion on all he has made.", bible:true},
+  {text:"The Lord is gracious and compassionate, slow to anger and rich in love.", bible:true},
+  {text:"Blessed are the pure in heart, for they shall see God.", bible:true},
+  {text:"Blessed are the peacemakers, for they shall be called sons of God.", bible:true},
+  {text:"Blessed are those who hunger and thirst for righteousness, for they shall be satisfied.", bible:true},
+  {text:"The harvest is plentiful but the workers are few.", bible:true},
+  {text:"Seek first his kingdom and his righteousness.", bible:true},
+  {text:"He has shown you, O man, what is good; and what does the Lord require of you but to do justice, love kindness, and walk humbly with your God?", bible:true},
+  {text:"Do not worry about tomorrow, for tomorrow will worry about itself.", bible:true},
+  {text:"Come to me, all you who are weary and burdened, and I will give you rest.", bible:true},
+  {text:"My grace is sufficient for you, for my power is made perfect in weakness.", bible:true},
+  {text:"The Lord is my rock, my fortress, and my deliverer.", bible:true},
+
+  // === NOT BIBLE Quotes ===
+  {text:"God helps those who help themselves.", bible:false},
+  {text:"Cleanliness is next to godliness.", bible:false},
+  {text:"To thine own self be true.", bible:false},
+  {text:"The Force will be with you, always.", bible:false},
+  {text:"Do or do not, there is no try.", bible:false},
+  {text:"One ring to rule them all, one ring to find them.", bible:false},
+  {text:"The needs of the many outweigh the needs of the few.", bible:false},
+  {text:"Winter is coming.", bible:false},
+  {text:"Speak, friend, and enter.", bible:false},
+  {text:"Money is the root of all evil.", bible:false},
+  {text:"The lion shall lie down with the lamb.", bible:false},
+  {text:"Spare the rod, spoil the child.", bible:false},
+  {text:"Neither a borrower nor a lender be.", bible:false},
+  {text:"May the Force be with you.", bible:false},
+  {text:"Fear leads to anger, anger leads to hate, hate leads to suffering.", bible:false},
+  {text:"Even the smallest person can change the course of the future.", bible:false},
+  {text:"A wizard is never late, nor is he early. He arrives precisely when he means to.", bible:false},
+  {text:"Hell hath no fury like a woman scorned.", bible:false},
+  {text:"All that glitters is not gold.", bible:false},
+  {text:"Elementary, my dear Watson.", bible:false},
+  {text:"Not all those who wander are lost.", bible:false},
+  {text:"The cake is a lie.", bible:false},
+  {text:"Live long and prosper.", bible:false},
+  {text:"Houston, we have a problem.", bible:false},
+  {text:"Fortune favors the bold.", bible:false},
+  {text:"Rome wasn’t built in a day.", bible:false},
+  {text:"Curiosity killed the cat.", bible:false},
+  {text:"Jack of all trades, master of none.", bible:false},
+  {text:"The early bird catches the worm.", bible:false},
+  {text:"When life gives you lemons, make lemonade.", bible:false},
+  {text:"You miss 100% of the shots you don’t take.", bible:false},
+  {text:"Keep calm and carry on.", bible:false},
+  {text:"A penny saved is a penny earned.", bible:false},
+  {text:"All’s fair in love and war.", bible:false},
+  {text:"There’s no place like home.", bible:false},
+  {text:"Beam me up, Scotty.", bible:false},
+  {text:"I think, therefore I am.", bible:false},
+  {text:"Speak softly and carry a big stick.", bible:false},
+  {text:"The truth is out there.", bible:false},
+  {text:"Why so serious?", bible:false},
+  {text:"Hasta la vista, baby.", bible:false},
+  {text:"Life is like a box of chocolates; you never know what you’re gonna get.", bible:false},
+  {text:"Just keep swimming.", bible:false},
+  {text:"Bond. James Bond.", bible:false},
+  {text:"Carpe diem. Seize the day.", bible:false},
+  {text:"To infinity and beyond!", bible:false},
+  {text:"Yippee-ki-yay!", bible:false},
+  {text:"I’ll be back.", bible:false},
+  {text:"Frankly, my dear, I don’t give a damn.", bible:false},
+  {text:"You talking to me?", bible:false},
+  {text:"Here’s looking at you, kid.", bible:false}
 ];
 
-// Start game
+// --- SHUFFLE HELPER ---
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
+  }
+}
+
+// --- GAME FLOW ---
 function startGame(){
-  playerName = (document.getElementById("playerName").value || "Player").trim();
-  score = 0;
-  questionIndex = 0;
+  playerName=document.getElementById("playerName").value||"Player";
+  score=0;
+  questionIndex=0;
+  shuffle(questions); // shuffle each new game
   document.getElementById("menu").classList.remove("active");
   document.getElementById("game").classList.add("active");
   renderQuestion();
 }
 
 function renderQuestion(){
-  const q = questions[questionIndex % questions.length];
+  let q = questions[questionIndex % questions.length];
   document.getElementById("questionBox").innerText = q.text;
   document.getElementById("score").innerText = "Score: " + score;
 }
 
 function answer(userChoice){
-  const correct = questions[questionIndex % questions.length].bible;
-  if(userChoice === correct){ score += 10; } else { score -= 10; }
+  let correct = questions[questionIndex % questions.length].bible;
+  if(userChoice === correct){score+=10;} else {score-=10;}
   questionIndex++;
   renderQuestion();
 }
 
 function submitScore(){
-  saveScore(playerName, score);
-  alert("Final Score: " + score);
+  saveScore(playerName,score);
+  alert("Final Score: "+score);
   goHome();
 }
 
@@ -214,26 +155,24 @@ function goHome(){
   renderLeaderboard();
 }
 
-function saveScore(name, score){
-  let scores = JSON.parse(localStorage.getItem("bibleScores") || "[]");
-  scores.push({name, score});
-  scores.sort((a,b)=>b.score - a.score);
-  scores = scores.slice(0, 10);
-  localStorage.setItem("bibleScores", JSON.stringify(scores));
+function saveScore(name,score){
+  let scores=JSON.parse(localStorage.getItem("bibleScores")||"[]");
+  scores.push({name,score});
+  scores.sort((a,b)=>b.score-b.score);
+  scores=scores.slice(0,10);
+  localStorage.setItem("bibleScores",JSON.stringify(scores));
 }
 
 function renderLeaderboard(){
-  const scores = JSON.parse(localStorage.getItem("bibleScores") || "[]");
-  const list = document.getElementById("leaderList");
-  list.innerHTML = "";
+  let scores=JSON.parse(localStorage.getItem("bibleScores")||"[]");
+  let list=document.getElementById("leaderList");
+  list.innerHTML="";
   scores.forEach(s=>{
-    const li = document.createElement("li");
-    li.textContent = s.name + " - " + s.score;
+    let li=document.createElement("li");
+    li.textContent=s.name+" - "+s.score;
     list.appendChild(li);
   });
 }
 
 renderLeaderboard();
 </script>
-</body>
-</html>
