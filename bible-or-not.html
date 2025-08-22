@@ -6,8 +6,7 @@
 <title>Bible or Not? - Dominion Games</title>
 
 <!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248"
-     crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248" crossorigin="anonymous"></script>
 
 <style>
   :root{
@@ -114,10 +113,11 @@
   <footer>© Dominion Games</footer>
 
 <script>
-let playerName, score, questionIndex;
-let questions = [
+let playerName = "";
+let score = 0;
+let questionIndex = 0;
 
-     let questions = [
+const questions = [
   // --- Bible (True) ---
   {text:"In the beginning God created the heavens and the earth.", bible:true},
   {text:"The Lord is my shepherd; I shall not want.", bible:true},
@@ -131,16 +131,16 @@ let questions = [
   {text:"The fear of the Lord is the beginning of wisdom.", bible:true},
 
   // --- Not Bible (False, but sounds biblical) ---
-  {text:"God helps those who help themselves.", bible:false}, // Commonly mistaken
+  {text:"God helps those who help themselves.", bible:false},
   {text:"Cleanliness is next to godliness.", bible:false},
-  {text:"To thine own self be true.", bible:false}, // Shakespeare
-  {text:"The Force will be with you, always.", bible:false}, // Star Wars
-  {text:"Do or do not, there is no try.", bible:false}, // Yoda
-  {text:"One ring to rule them all, one ring to find them.", bible:false}, // LOTR
-  {text:"This above all: to thine own self be true.", bible:false}, // Shakespeare
-  {text:"The needs of the many outweigh the needs of the few.", bible:false}, // Star Trek
-  {text:"Winter is coming.", bible:false}, // Game of Thrones
-  {text:"Speak, friend, and enter.", bible:false}, // LOTR
+  {text:"To thine own self be true.", bible:false},
+  {text:"The Force will be with you, always.", bible:false},
+  {text:"Do or do not, there is no try.", bible:false},
+  {text:"One ring to rule them all, one ring to find them.", bible:false},
+  {text:"Charity begins at home.", bible:false},
+  {text:"The needs of the many outweigh the needs of the few.", bible:false},
+  {text:"Winter is coming.", bible:false},
+  {text:"Speak, friend, and enter.", bible:false},
 
   // --- Bible (True) ---
   {text:"Let there be light.", bible:true},
@@ -155,18 +155,18 @@ let questions = [
   {text:"Cast all your anxiety on Him because He cares for you.", bible:true},
 
   // --- Not Bible (False, tricky ones) ---
-  {text:"Money is the root of all evil.", bible:false}, // Misquote
-  {text:"The lion shall lie down with the lamb.", bible:false}, // Actually wolf
-  {text:"Spare the rod, spoil the child.", bible:false}, // Not a verse
-  {text:"Neither a borrower nor a lender be.", bible:false}, // Shakespeare
-  {text:"May the Force be with you.", bible:false}, 
-  {text:"Fear leads to anger, anger leads to hate, hate leads to suffering.", bible:false}, // Yoda
-  {text:"Even the smallest person can change the course of the future.", bible:false}, // LOTR
-  {text:"A wizard is never late, nor is he early. He arrives precisely when he means to.", bible:false}, // Gandalf
+  {text:"Money is the root of all evil.", bible:false},
+  {text:"The lion shall lie down with the lamb.", bible:false},
+  {text:"Spare the rod, spoil the child.", bible:false},
+  {text:"Neither a borrower nor a lender be.", bible:false},
+  {text:"May the Force be with you.", bible:false},
+  {text:"Fear leads to anger, anger leads to hate, hate leads to suffering.", bible:false},
+  {text:"Even the smallest person can change the course of the future.", bible:false},
+  {text:"A wizard is never late, nor is he early. He arrives precisely when he means to.", bible:false},
   {text:"Hell hath no fury like a woman scorned.", bible:false},
   {text:"All that glitters is not gold.", bible:false},
 
-  // More Bible
+  // --- More Bible (True) ---
   {text:"The truth will set you free.", bible:true},
   {text:"I am the way, the truth, and the life.", bible:true},
   {text:"Be still, and know that I am God.", bible:true},
@@ -179,36 +179,32 @@ let questions = [
   {text:"Our Father in heaven, hallowed be your name.", bible:true},
 ];
 
-     
-     {text:"In the beginning God created the heavens and the earth.", bible:true},
- 
-  {text:"The Lord is my shepherd; I shall not want.", bible:true},
-     
+// Start game
 function startGame(){
-  playerName=document.getElementById("playerName").value||"Player";
-  score=0;
-  questionIndex=0;
+  playerName = (document.getElementById("playerName").value || "Player").trim();
+  score = 0;
+  questionIndex = 0;
   document.getElementById("menu").classList.remove("active");
   document.getElementById("game").classList.add("active");
   renderQuestion();
 }
 
 function renderQuestion(){
-  let q = questions[questionIndex % questions.length];
+  const q = questions[questionIndex % questions.length];
   document.getElementById("questionBox").innerText = q.text;
   document.getElementById("score").innerText = "Score: " + score;
 }
 
 function answer(userChoice){
-  let correct = questions[questionIndex % questions.length].bible;
-  if(userChoice === correct){score+=10;} else {score-=10;}
+  const correct = questions[questionIndex % questions.length].bible;
+  if(userChoice === correct){ score += 10; } else { score -= 10; }
   questionIndex++;
   renderQuestion();
 }
 
 function submitScore(){
-  saveScore(playerName,score);
-  alert("Final Score: "+score);
+  saveScore(playerName, score);
+  alert("Final Score: " + score);
   goHome();
 }
 
@@ -218,21 +214,21 @@ function goHome(){
   renderLeaderboard();
 }
 
-function saveScore(name,score){
-  let scores=JSON.parse(localStorage.getItem("bibleScores")||"[]");
-  scores.push({name,score});
-  scores.sort((a,b)=>b.score-b.score);
-  scores=scores.slice(0,10);
-  localStorage.setItem("bibleScores",JSON.stringify(scores));
+function saveScore(name, score){
+  let scores = JSON.parse(localStorage.getItem("bibleScores") || "[]");
+  scores.push({name, score});
+  scores.sort((a,b)=>b.score - a.score);
+  scores = scores.slice(0, 10);
+  localStorage.setItem("bibleScores", JSON.stringify(scores));
 }
 
 function renderLeaderboard(){
-  let scores=JSON.parse(localStorage.getItem("bibleScores")||"[]");
-  let list=document.getElementById("leaderList");
-  list.innerHTML="";
+  const scores = JSON.parse(localStorage.getItem("bibleScores") || "[]");
+  const list = document.getElementById("leaderList");
+  list.innerHTML = "";
   scores.forEach(s=>{
-    let li=document.createElement("li");
-    li.textContent=s.name+" - "+s.score;
+    const li = document.createElement("li");
+    li.textContent = s.name + " - " + s.score;
     list.appendChild(li);
   });
 }
