@@ -94,11 +94,18 @@
   .touchBtn{
     background:#022;
     border:1px solid var(--accent);
-    padding:20px;
+    padding:28px;          /* bigger button */
     border-radius:50%;
-    font-size:20px;
+    font-size:26px;        /* bigger arrow symbol */
     color:var(--fg);
     user-select:none;
+  }
+  /* Extra boost on small screens */
+  @media (max-width:600px){
+    .touchBtn{
+      padding:36px;
+      font-size:32px;
+    }
   }
 </style>
 </head>
