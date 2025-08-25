@@ -82,8 +82,14 @@
   #touchControls{
     margin-top:12px;
     display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+  }
+  .row{
+    display:flex;
     justify-content:center;
-    gap:12px;
+    gap:6px;
   }
   .touchBtn{
     background:#022;
@@ -119,10 +125,16 @@
       <div id="score">Score: 0</div>
       <canvas id="snakeCanvas" width="400" height="400"></canvas>
       <div id="touchControls">
-        <div class="touchBtn" onclick="changeDir('ArrowUp')">⬆️</div>
-        <div class="touchBtn" onclick="changeDir('ArrowLeft')">⬅️</div>
-        <div class="touchBtn" onclick="changeDir('ArrowDown')">⬇️</div>
-        <div class="touchBtn" onclick="changeDir('ArrowRight')">➡️</div>
+        <div class="row">
+          <div class="touchBtn" onclick="changeDir('ArrowUp')">⬆️</div>
+        </div>
+        <div class="row">
+          <div class="touchBtn" onclick="changeDir('ArrowLeft')">⬅️</div>
+          <div class="touchBtn" onclick="changeDir('ArrowRight')">➡️</div>
+        </div>
+        <div class="row">
+          <div class="touchBtn" onclick="changeDir('ArrowDown')">⬇️</div>
+        </div>
       </div>
       <div style="margin-top:10px;">
         <button class="btn" onclick="togglePause()">⏸ Pause</button>
@@ -201,7 +213,13 @@ function changeDir(key){
   if(key==="ArrowRight"&&dir.x!==-1) dir={x:1,y:0};
 }
 
-document.addEventListener("keydown",e=>changeDir(e.key));
+// Prevent page scroll on arrow keys
+document.addEventListener("keydown",e=>{
+  if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){
+    e.preventDefault();
+    changeDir(e.key);
+  }
+});
 
 function togglePause(){
   paused=!paused;
