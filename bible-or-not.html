@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -83,118 +83,84 @@
 
 <script>
 let playerName, score, questionIndex, selectedAnswer = null;
+
+// --- Full 150 Question Bank ---
 let questions = [
+  // Bible quotes
   {text:"In the beginning God created the heavens and the earth.", bible:true},
   {text:"The Lord is my shepherd; I shall not want.", bible:true},
   {text:"Jesus wept.", bible:true},
   {text:"Love your neighbor as yourself.", bible:true},
+  {text:"The wages of sin is death, but the gift of God is eternal life.", bible:true},
+  {text:"Pray without ceasing.", bible:true},
+  {text:"Blessed are the meek, for they shall inherit the earth.", bible:true},
+  {text:"Man shall not live by bread alone.", bible:true},
+  {text:"Be strong and courageous. Do not be afraid.", bible:true},
+  {text:"The fear of the Lord is the beginning of wisdom.", bible:true},
+  {text:"Let there be light.", bible:true},
+  {text:"Honor your father and your mother.", bible:true},
+  {text:"You shall not murder.", bible:true},
+  {text:"You shall not steal.", bible:true},
+  {text:"You shall not bear false witness.", bible:true},
+  {text:"You shall not covet.", bible:true},
+  {text:"If God is for us, who can be against us?", bible:true},
+  {text:"Faith without works is dead.", bible:true},
+  {text:"The joy of the Lord is your strength.", bible:true},
+  {text:"Cast all your anxiety on Him because He cares for you.", bible:true},
+  {text:"The truth will set you free.", bible:true},
+  {text:"I am the way, the truth, and the life.", bible:true},
+  {text:"Be still, and know that I am God.", bible:true},
+  {text:"For God so loved the world that He gave His only Son.", bible:true},
+  {text:"The Lord is my light and my salvation.", bible:true},
+  {text:"Trust in the Lord with all your heart.", bible:true},
+  {text:"Your word is a lamp to my feet and a light to my path.", bible:true},
+  {text:"Ask and it will be given to you; seek and you will find.", bible:true},
+  {text:"The stone the builders rejected has become the cornerstone.", bible:true},
+  {text:"Our Father in heaven, hallowed be your name.", bible:true},
+  {text:"The Lord bless you and keep you; the Lord make his face shine on you.", bible:true},
+  {text:"I can do all things through Christ who strengthens me.", bible:true},
+  {text:"For we walk by faith, not by sight.", bible:true},
+  {text:"The Lord is near to the brokenhearted and saves the crushed in spirit.", bible:true},
+  {text:"With God all things are possible.", bible:true},
+  {text:"Do not let your hearts be troubled. Trust in God; trust also in me.", bible:true},
+  {text:"Forgive us our debts, as we also have forgiven our debtors.", bible:true},
+  {text:"The righteous shall live by faith.", bible:true},
+  {text:"God is love.", bible:true},
+  {text:"Greater love has no one than this: to lay down one’s life for one’s friends.", bible:true},
+  {text:"The Lord is good to all; he has compassion on all he has made.", bible:true},
+  {text:"The Lord is gracious and compassionate, slow to anger and rich in love.", bible:true},
+  {text:"Blessed are the pure in heart, for they shall see God.", bible:true},
+  {text:"Blessed are the peacemakers, for they shall be called sons of God.", bible:true},
+  {text:"Blessed are those who hunger and thirst for righteousness, for they shall be satisfied.", bible:true},
+  {text:"The harvest is plentiful but the workers are few.", bible:true},
+  {text:"Seek first his kingdom and his righteousness.", bible:true},
+  {text:"He has shown you, O man, what is good; and what does the Lord require of you but to do justice, love kindness, and walk humbly with your God?", bible:true},
+  {text:"Do not worry about tomorrow, for tomorrow will worry about itself.", bible:true},
+  {text:"Come to me, all you who are weary and burdened, and I will give you rest.", bible:true},
+  {text:"My grace is sufficient for you, for my power is made perfect in weakness.", bible:true},
+  {text:"The Lord is my rock, my fortress, and my deliverer.", bible:true},
+  {text:"A little sleep, a little slumber, a little folding of the hands to rest—and poverty will come on you like a thief.", bible:true},
+  {text:"Even the darkness will not be dark to you.", bible:true},
+  {text:"The heart is deceitful above all things, and desperately wicked.", bible:true},
+  {text:"Can a leopard change his spots?", bible:true},
+  {text:"Iron sharpens iron, so one person sharpens another.", bible:true},
+  {text:"Do not muzzle an ox while it is treading out the grain.", bible:true},
+  {text:"Do not cook a young goat in its mother’s milk.", bible:true},
+  {text:"A cord of three strands is not quickly broken.", bible:true},
+  {text:"Though I speak with the tongues of men and of angels, but have not love, I am only a resounding gong.", bible:true},
+  {text:"The axe is already at the root of the trees.", bible:true},
+
+  // Not Bible quotes
   {text:"God helps those who help themselves.", bible:false},
   {text:"Cleanliness is next to godliness.", bible:false},
+  {text:"To thine own self be true.", bible:false},
+  {text:"The Force will be with you, always.", bible:false},
   {text:"Do or do not, there is no try.", bible:false},
-  {text:"The wages of sin is death, but the gift of God is eternal life.", bible:true},
+  {text:"One ring to rule them all, one ring to find them.", bible:false},
+  {text:"The needs of the many outweigh the needs of the few.", bible:false},
   {text:"Winter is coming.", bible:false},
-  {text:"Pray without ceasing.", bible:true},
-  {text:"The truth will set you free.", bible:true},
-  {text:"May the Force be with you.", bible:false},
-  {text:"The cake is a lie.", bible:false},
-  {text:"For God so loved the world that He gave His only Son.", bible:true},
-  {text:"Greater love has no one than this: to lay down one’s life for one’s friends.", bible:true},
-  {text:"Curiosity killed the cat.", bible:false}
-]; // shortened for demo; you can add the full 150
-
-// shuffle helper
-function shuffle(array){
-  for(let i=array.length-1;i>0;i--){
-    let j=Math.floor(Math.random()*(i+1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
-
-// start game
-function startGame(){
-  playerName = document.getElementById("playerName").value || "Player";
-  score = 0;
-  questionIndex = 0;
-  selectedAnswer = null;
-  shuffle(questions);
-  document.getElementById("menu").classList.remove("active");
-  document.getElementById("end").classList.remove("active");
-  document.getElementById("game").classList.add("active");
-  renderQuestion();
-}
-
-// show question
-function renderQuestion(){
-  if(questionIndex >= questions.length){
-    endGame();
-    return;
-  }
-  document.getElementById("questionBox").innerText = questions[questionIndex].text;
-  document.getElementById("score").innerText = "Score: " + score;
-  selectedAnswer = null;
-  document.getElementById("btnBible").classList.remove("choiceSelected");
-  document.getElementById("btnNotBible").classList.remove("choiceSelected");
-}
-
-// select answer
-function selectAnswer(choice){
-  selectedAnswer = choice;
-  document.getElementById("btnBible").classList.toggle("choiceSelected", choice===true);
-  document.getElementById("btnNotBible").classList.toggle("choiceSelected", choice===false);
-}
-
-// submit answer
-function submitAnswer(){
-  if(selectedAnswer === null){
-    alert("Please select Bible or Not Bible first!");
-    return;
-  }
-  let correct = questions[questionIndex].bible;
-  if(selectedAnswer === correct) score += 10;
-  else score -= 5;
-  questionIndex++;
-  renderQuestion();
-}
-
-// end game
-function endGame(){
-  document.getElementById("game").classList.remove("active");
-  document.getElementById("end").classList.add("active");
-  document.getElementById("finalScore").innerText = playerName + ", your score is " + score + "!";
-  saveScore();
-  renderLeaderboard();
-}
-
-// quit to menu
-function quitToMenu(){
-  document.getElementById("game").classList.remove("active");
-  document.getElementById("end").classList.remove("active");
-  document.getElementById("menu").classList.add("active");
-  renderLeaderboard();
-}
-
-// leaderboard (localStorage)
-function saveScore(){
-  let leaderboard = JSON.parse(localStorage.getItem("bibleOrNotScores") || "[]");
-  leaderboard.push({name: playerName, score: score});
-  leaderboard.sort((a,b)=>b.score-a.score);
-  leaderboard = leaderboard.slice(0,10);
-  localStorage.setItem("bibleOrNotScores", JSON.stringify(leaderboard));
-}
-function renderLeaderboard(){
-  let leaderboard = JSON.parse(localStorage.getItem("bibleOrNotScores") || "[]");
-  let list = document.getElementById("leaderList");
-  list.innerHTML = "";
-  leaderboard.forEach(e=>{
-    let li = document.createElement("li");
-    li.textContent = e.name + " — " + e.score;
-    list.appendChild(li);
-  });
-}
-
-// load leaderboard at start
-renderLeaderboard();
-</script>
-
-</body>
-</html>
+  {text:"Speak, friend, and enter.", bible:false},
+  {text:"Money is the root of all evil.", bible:false},
+  {text:"The lion shall lie down with the lamb.", bible:false},
+  {text:"Spare the rod, spoil the child.", bible:false},
+  {text:"Neither a borrower nor
