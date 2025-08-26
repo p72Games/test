@@ -163,4 +163,164 @@ let questions = [
   {text:"Money is the root of all evil.", bible:false},
   {text:"The lion shall lie down with the lamb.", bible:false},
   {text:"Spare the rod, spoil the child.", bible:false},
-  {text:"Neither a borrower nor
+  {text:"Neither a borrower nor a lender be.", bible:false},
+  {text:"May the Force be with you.", bible:false},
+  {text:"Fear leads to anger, anger leads to hate, hate leads to suffering.", bible:false},
+  {text:"Even the smallest person can change the course of the future.", bible:false},
+  {text:"A wizard is never late, nor is he early. He arrives precisely when he means to.", bible:false},
+  {text:"Hell hath no fury like a woman scorned.", bible:false},
+  {text:"All that glitters is not gold.", bible:false},
+  {text:"Elementary, my dear Watson.", bible:false},
+  {text:"Not all those who wander are lost.", bible:false},
+  {text:"The cake is a lie.", bible:false},
+  {text:"Live long and prosper.", bible:false},
+  {text:"Houston, we have a problem.", bible:false},
+  {text:"Fortune favors the bold.", bible:false},
+  {text:"Rome wasn’t built in a day.", bible:false},
+  {text:"Curiosity killed the cat.", bible:false},
+  {text:"Jack of all trades, master of none.", bible:false},
+  {text:"The early bird catches the worm.", bible:false},
+  {text:"When life gives you lemons, make lemonade.", bible:false},
+  {text:"You miss 100% of the shots you don’t take.", bible:false},
+  {text:"Keep calm and carry on.", bible:false},
+  {text:"A penny saved is a penny earned.", bible:false},
+  {text:"All’s fair in love and war.", bible:false},
+  {text:"There’s no place like home.", bible:false},
+  {text:"Beam me up, Scotty.", bible:false},
+  {text:"I think, therefore I am.", bible:false},
+  {text:"Speak softly and carry a big stick.", bible:false},
+  {text:"The truth is out there.", bible:false},
+  {text:"Why so serious?", bible:false},
+  {text:"Hasta la vista, baby.", bible:false},
+  {text:"Life is like a box of chocolates; you never know what you’re gonna get.", bible:false},
+  {text:"Just keep swimming.", bible:false},
+  {text:"Bond. James Bond.", bible:false},
+  {text:"Carpe diem. Seize the day.", bible:false},
+  {text:"To infinity and beyond!", bible:false},
+  {text:"Yippee-ki-yay!", bible:false},
+  {text:"I’ll be back.", bible:false},
+  {text:"Frankly, my dear, I don’t give a damn.", bible:false},
+  {text:"You talking to me?", bible:false},
+  {text:"Here’s looking at you, kid.", bible:false},
+  {text:"Knowledge is power.", bible:false},
+  {text:"The unexamined life is not worth living.", bible:false},
+  {text:"Give me liberty or give me death!", bible:false},
+  {text:"The only thing we have to fear is fear itself.", bible:false},
+  {text:"That which does not kill us makes us stronger.", bible:false},
+  {text:"All men are created equal.", bible:false},
+  {text:"Time heals all wounds.", bible:false},
+  {text:"History repeats itself.", bible:false},
+  {text:"The ends justify the means.", bible:false},
+  {text:"Power tends to corrupt, and absolute power corrupts absolutely.", bible:false},
+  {text:"This too shall pass.", bible:false},
+  {text:"Charity begins at home.", bible:false},
+  {text:"Better to remain silent and be thought a fool than to speak and remove all doubt.", bible:false},
+  {text:"The road to hell is paved with good intentions.", bible:false},
+  {text:"No pain, no gain.", bible:false},
+  {text:"Blood is thicker than water.", bible:false},
+  {text:"The pen is mightier than the sword.", bible:false},
+  {text:"A journey of a thousand miles begins with a single step.", bible:false},
+  {text:"Life is what happens when you're busy making other plans.", bible:false},
+  {text:"Love is blind.", bible:false},
+  {text:"Beauty is in the eye of the beholder.", bible:false},
+  {text:"Necessity is the mother of invention.", bible:false},
+  {text:"Birds of a feather flock together.", bible:false},
+  {text:"Absence makes the heart grow fonder.", bible:false},
+  {text:"All good things must come to an end.", bible:false},
+  {text:"Rome wasn’t built in a day.", bible:false},
+  {text:"Familiarity breeds contempt.", bible:false},
+  {text:"The squeaky wheel gets the grease.", bible:false},
+  {text:"Don’t count your chickens before they hatch.", bible:false},
+  {text:"Strike while the iron is hot.", bible:false},
+  {text:"Curiosity killed the cat.", bible:false},
+  {text:"Time and tide wait for no man.", bible:false},
+  {text:"Jack of all trades, master of none.", bible:false},
+  {text:"Opportunity knocks but once.", bible:false},
+  {text:"Practice makes perfect.", bible:false},
+  {text:"Actions speak louder than words.", bible:false}
+];
+
+// shuffle helper
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+// start game
+function startGame(){
+  playerName = document.getElementById("playerName").value || "Player";
+  score = 0;
+  questionIndex = 0;
+  selectedAnswer = null;
+  shuffle(questions);
+  document.getElementById("menu").classList.remove("active");
+  document.getElementById("end").classList.remove("active");
+  document.getElementById("game").classList.add("active");
+  renderQuestion();
+}
+
+// show question
+function renderQuestion(){
+  if(questionIndex >= questions.length){
+    endGame();
+    return;
+  }
+  document.getElementById("questionBox").innerText = questions[questionIndex].text;
+  document.getElementById("score").innerText = "Score: " + score;
+  selectedAnswer = null;
+  document.getElementById("btnBible").classList.remove("choiceSelected");
+  document.getElementById("btnNotBible").classList.remove("choiceSelected");
+}
+
+// select answer
+function selectAnswer(choice){
+  selectedAnswer = choice;
+  document.getElementById("btnBible").classList.toggle("choiceSelected", choice===true);
+  document.getElementById("btnNotBible").classList.toggle("choiceSelected", choice===false);
+}
+
+// submit answer
+function submitAnswer(){
+  if(selectedAnswer === null){
+    alert("Please select Bible or Not Bible first!");
+    return;
+  }
+  let correct = questions[questionIndex].bible;
+  if(selectedAnswer === correct) score += 10;
+  else score -= 5;
+  questionIndex++;
+  renderQuestion();
+}
+
+// end game
+function endGame(){
+  document.getElementById("game").classList.remove("active");
+  document.getElementById("end").classList.add("active");
+  document.getElementById("finalScore").innerText = playerName + ", your score is " + score + "!";
+  saveScore();
+  renderLeaderboard();
+}
+
+// quit to menu
+function quitToMenu(){
+  document.getElementById("game").classList.remove("active");
+  document.getElementById("end").classList.remove("active");
+  document.getElementById("menu").classList.add("active");
+  renderLeaderboard();
+}
+
+// leaderboard (localStorage)
+function saveScore(){
+  let leaderboard = JSON.parse(localStorage.getItem("bibleOrNotScores") || "[]");
+  leaderboard.push({name: playerName, score: score});
+  leaderboard.sort((a,b)=>b.score-a.score);
+  leaderboard = leaderboard.slice(0,10);
+  localStorage.setItem("bibleOrNotScores", JSON.stringify(leaderboard));
+}
+function renderLeaderboard(){
+  let leaderboard = JSON.parse(localStorage.getItem("bibleOrNotScores") || "[]");
+  let list = document.getElementById("leaderList");
+  list.innerHTML = "";
+ 
