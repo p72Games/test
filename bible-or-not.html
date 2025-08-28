@@ -118,10 +118,15 @@
 <footer>Dominion Games</footer>
 
 <script>
-/* 150 QUESTIONS: 75 Bible (true), 75 Not Bible (false) */
-/* All quotes use straight ASCII quotes to avoid JS errors. */
+/* Small global error handler to surface issues while you test */
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error("Script error:", message, "at", source + ":" + lineno + ":" + colno, error);
+  try { alert("JavaScript error: " + message + ". See console for details."); } catch(e) {}
+};
+
+/* 150 QUESTIONS (75 Bible true, 75 Not-Bible false) - all straight quotes */
 let questions = [
-  /* ---------------------- 75 BIBLE (TRUE) ---------------------- */
+  /* 1-75: Bible (true) */
   {text:"In the beginning God created the heavens and the earth.", bible:true},
   {text:"The Lord is my shepherd; I shall not want.", bible:true},
   {text:"Jesus wept.", bible:true},
@@ -165,7 +170,7 @@ let questions = [
   {text:"The Lord is gracious and compassionate, slow to anger and rich in love.", bible:true},
   {text:"Blessed are the pure in heart, for they shall see God.", bible:true},
   {text:"Blessed are the peacemakers, for they shall be called children of God.", bible:true},
-  {text:"Blessed are those who hunger and thirst for righteousness.", bible:true},
+  {text:"Blessed are those who hunger and thirst for righteousness, for they shall be satisfied.", bible:true},
   {text:"The harvest is plentiful but the workers are few.", bible:true},
   {text:"Seek first the kingdom of God and His righteousness.", bible:true},
   {text:"He has shown you what is good: to do justice, love kindness, and walk humbly with your God.", bible:true},
@@ -196,28 +201,8 @@ let questions = [
   {text:"Encourage one another and build each other up.", bible:true},
   {text:"Where two or three are gathered in my name, there am I among them.", bible:true},
   {text:"The name of the Lord is a strong tower; the righteous run to it and are safe.", bible:true},
-  {text:"Above all else, guard your heart, for everything you do flows from it.", bible:true},
-  {text:"As for me and my house, we will serve the Lord.", bible:true},
-  {text:"Humble yourselves before the Lord, and He will lift you up.", bible:true},
-  {text:"Draw near to God and He will draw near to you.", bible:true},
-  {text:"A gentle answer turns away wrath, but a harsh word stirs up anger.", bible:true},
-  {text:"Pride goes before destruction, and a haughty spirit before a fall.", bible:true},
-  {text:"Bless the Lord, O my soul, and forget not all His benefits.", bible:true},
-  {text:"The Lord is my strength and my shield.", bible:true},
-  {text:"Trust in the Lord forever, for the Lord God is an everlasting rock.", bible:true},
-  {text:"Teach us to number our days that we may gain a heart of wisdom.", bible:true},
-  {text:"Those who hope in the Lord will renew their strength; they will run and not grow weary.", bible:true},
-  {text:"Call to me and I will answer you and tell you great and unsearchable things you do not know.", bible:true},
-  {text:"The Lord is good, a refuge in times of trouble; He cares for those who trust in Him.", bible:true},
-  {text:"He heals the brokenhearted and binds up their wounds.", bible:true},
-  {text:"The steadfast love of the Lord never ceases; His mercies never come to an end.", bible:true},
-  {text:"Better is a little with righteousness than great revenues with injustice.", bible:true},
-  {text:"Commit your way to the Lord; trust in Him and He will act.", bible:true},
-  {text:"A cheerful heart is good medicine.", bible:true},
-  {text:"Whoever finds wisdom finds life.", bible:true},
-  {text:"Hatred stirs up strife, but love covers all offenses.", bible:true},
 
-  /* -------------------- 75 NOT BIBLE (FALSE) -------------------- */
+  /* 76-150: Not-Bible (false) */
   {text:"May the Force be with you.", bible:false},
   {text:"To be or not to be, that is the question.", bible:false},
   {text:"Do or do not, there is no try.", bible:false},
@@ -247,7 +232,6 @@ let questions = [
   {text:"The cake is a lie.", bible:false},
   {text:"All that glitters is not gold.", bible:false},
   {text:"Speak softly and carry a big stick.", bible:false},
-  {text:"Not today, Satan.", bible:false},
   {text:"It always seems impossible until it is done.", bible:false},
   {text:"A journey of a thousand miles begins with a single step.", bible:false},
   {text:"Genius is one percent inspiration and ninety-nine percent perspiration.", bible:false},
@@ -259,7 +243,6 @@ let questions = [
   {text:"All we have to decide is what to do with the time that is given us.", bible:false},
   {text:"Even the smallest person can change the course of the future.", bible:false},
   {text:"A wizard is never late, nor is he early; he arrives precisely when he means to.", bible:false},
-  {text:"Elementary facts are useless without imagination.", bible:false},
   {text:"The pen is mightier than the sword.", bible:false},
   {text:"Time is a flat circle.", bible:false},
   {text:"Power tends to corrupt, and absolute power corrupts absolutely.", bible:false},
@@ -284,13 +267,10 @@ let questions = [
   {text:"All's fair in love and war.", bible:false},
   {text:"Rome was not built in a day.", bible:false},
   {text:"Speak, friend, and enter.", bible:false},
-  {text:"The needs of the few outweigh the needs of the many.", bible:false},
   {text:"Live long and prosper.", bible:false},
   {text:"Not all heroes wear capes.", bible:false},
-  {text:"Elementary, my dear.", bible:false},
   {text:"Failure is the condiment that gives success its flavor.", bible:false},
   {text:"It always seems darkest before the dawn.", bible:false},
-  {text:"Fortune favors the brave.", bible:false},
   {text:"Imitation is the sincerest form of flattery.", bible:false},
   {text:"The squeaky wheel gets the grease.", bible:false},
   {text:"Actions speak louder than words.", bible:false},
@@ -306,54 +286,43 @@ let questions = [
   {text:"Necessity is the mother of invention.", bible:false},
   {text:"Too many cooks spoil the broth.", bible:false},
   {text:"The customer is always right.", bible:false},
-  {text:"There is no I in team.", bible:false},
   {text:"Forty-two is the answer to life, the universe, and everything.", bible:false},
-  {text:"Winter is coming, brace yourselves.", bible:false},
   {text:"The game is afoot.", bible:false},
   {text:"It is a truth universally acknowledged that a single man in possession of a good fortune must be in want of a wife.", bible:false},
   {text:"All animals are equal, but some animals are more equal than others.", bible:false},
   {text:"Et tu, Brute.", bible:false},
   {text:"The die is cast.", bible:false},
-  {text:"Elementary truths are the most difficult to see.", bible:false},
-  {text:"Not everything that can be counted counts, and not everything that counts can be counted.", bible:false},
-  {text:"That which does not kill us makes us stronger.", bible:false},
-  {text:"The only constant in life is change.", bible:false},
-  {text:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.", bible:false},
-  {text:"Imagination is more important than knowledge.", bible:false},
-  {text:"Be the change that you wish to see in the world.", bible:false},
-  {text:"The journey is the destination.", bible:false},
-  {text:"Life is what happens when you are busy making other plans.", bible:false},
-  {text:"Elementary logic is the beginning of wisdom.", bible:false}
+  {text:"Not everything that can be counted counts, and not everything that counts can be counted.", bible:false}
 ];
 
-/* -------------- GAME STATE -------------- */
+/* GAME STATE */
 let playerName = "";
 let score = 0;
 let questionIndex = 0;
 let selectedAnswer = null;
 
-/* Fisher-Yates shuffle for true randomness */
+/* Shuffle (Fisher-Yates) */
 function shuffle(array){
   for(let i=array.length-1; i>0; i--){
-    const j = Math.floor(Math.random() * (i+1));
+    const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
 
-/* Start the game */
+/* Start */
 function startGame(){
   playerName = (document.getElementById("playerName").value || "Player").trim().slice(0,24);
   score = 0;
   questionIndex = 0;
   selectedAnswer = null;
-  shuffle(questions); // random order every time
+  shuffle(questions); // randomize order each game
   document.getElementById("menu").classList.remove("active");
   document.getElementById("end").classList.remove("active");
   document.getElementById("game").classList.add("active");
   renderQuestion();
 }
 
-/* Render a question */
+/* Render question */
 function renderQuestion(){
   if(questionIndex >= questions.length){
     endGame();
@@ -367,7 +336,7 @@ function renderQuestion(){
   document.getElementById("btnNotBible").classList.remove("choiceSelected");
 }
 
-/* Select answer */
+/* Select */
 function selectAnswer(choice){
   selectedAnswer = choice;
   document.getElementById("btnBible").classList.toggle("choiceSelected", choice === true);
@@ -391,7 +360,7 @@ function submitAnswer(){
   renderQuestion();
 }
 
-/* End */
+/* End game */
 function endGame(){
   document.getElementById("game").classList.remove("active");
   document.getElementById("end").classList.add("active");
@@ -408,13 +377,13 @@ function quitToMenu(){
   renderLeaderboard();
 }
 
-/* Leaderboard */
+/* Leaderboard: localStorage top 10 */
 function saveScore(){
   try {
     const key = "bibleOrNotLeaderboard";
     let lb = JSON.parse(localStorage.getItem(key) || "[]");
     lb.push({name: playerName || "Player", score: score, date: new Date().toISOString()});
-    lb.sort((a,b)=> b.score - a.score || new Date(b.date) - new Date(a.date));
+    lb.sort((a,b) => b.score - a.score || new Date(b.date) - new Date(a.date));
     lb = lb.slice(0, 10);
     localStorage.setItem(key, JSON.stringify(lb));
   } catch(e){
@@ -443,7 +412,7 @@ function renderLeaderboard(){
 /* Init */
 renderLeaderboard();
 
-/* Keyboard shortcuts: B = Bible, N = Not Bible, Enter = Submit */
+/* Keyboard controls */
 document.addEventListener("keydown", (e)=>{
   const inGame = document.getElementById("game").classList.contains("active");
   if(!inGame) return;
