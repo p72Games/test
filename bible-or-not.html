@@ -1,195 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bible or Not? | Dominion Games Arcade</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible or Not? | Dominion Games Arcade</title>
 
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248" crossorigin="anonymous"></script>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248"
+         crossorigin="anonymous"></script>
 
-<style>
-:root {
-    --bg: #000;
-    --fg: #00ff88;
-    --accent: #00e5ff;
-    --danger: #ff3366;
-}
-* { box-sizing: border-box; }
-body {
-    margin:0;
-    background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
-    color: var(--fg);
-    font-family: "Courier New", monospace;
-    text-align:center;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:20px;
-}
-h1 {
-    font-size: clamp(28px, 6vw, 48px);
-    margin-bottom:20px;
-    color:#a0fff2;
-    text-shadow:0 0 10px var(--fg),0 0 24px var(--accent);
-}
-.game-container {
-    max-width: 900px;
-    background: rgba(0,0,0,0.6);
-    border:2px solid var(--accent);
-    border-radius:16px;
-    padding:30px;
-    box-shadow:0 0 12px var(--accent);
-    margin:20px auto;
-}
-.quote {
-    font-size:18px;
-    line-height:1.6;
-    color:var(--fg);
-    opacity:0.9;
-    margin:0 0 20px;
-    min-height:60px;
-}
-.buttons { display:flex; justify-content:center; gap:20px; }
-.game-button {
-    background: linear-gradient(45deg, var(--accent), var(--fg));
-    border:3px solid var(--fg);
-    border-radius:24px;
-    padding:15px 30px;
-    cursor:pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 0 15px var(--fg), 0 0 25px var(--accent);
-}
-.game-button:hover { transform:scale(1.05); box-shadow:0 0 20px var(--fg),0 0 30px var(--accent); }
-.game-button h2 { margin:0; font-size:18px; color:var(--bg); text-shadow:0 0 5px var(--accent); }
-.feedback { font-size:16px; margin:20px 0; color:var(--danger); min-height:24px; }
-.score { font-size:20px; color:var(--fg); margin:10px 0; }
-.back-button {
-    background: linear-gradient(45deg, var(--accent), var(--fg));
-    border:3px solid var(--fg);
-    border-radius:24px;
-    padding:15px 30px;
-    cursor:pointer;
-    transition:transform 0.2s, box-shadow 0.2s;
-    box-shadow:0 0 15px var(--fg),0 0 25px var(--accent);
-    margin:30px auto;
-    max-width:300px;
-}
-.back-button:hover { transform:scale(1.05); box-shadow:0 0 20px var(--fg),0 0 30px var(--accent); }
-.back-button h2 { margin:0; font-size:20px; color:var(--bg); text-shadow:0 0 5px var(--accent); }
-.ads-container { margin:20px auto; min-height:90px; }
-footer { margin-top:30px; font-size:14px; opacity:0.7; }
-</style>
+    <style>
+        :root {
+            --bg: #000;
+            --fg: #00ff88;
+            --accent: #00e5ff;
+            --danger: #ff3366;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
+            color: var(--fg);
+            font-family: "Courier New", monospace;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: clamp(28px, 6vw, 48px);
+            margin-bottom: 20px;
+            color: #a0fff2;
+            text-shadow: 0 0 10px var(--fg), 0 0 24px var(--accent);
+        }
+        .game-container {
+            max-width: 900px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--accent);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 0 12px var(--accent);
+            margin: 20px auto;
+        }
+        .quote {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--fg);
+            opacity: 0.9;
+            margin: 0 0 20px;
+            min-height: 60px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .game-button {
+            background: linear-gradient(45deg, var(--accent), var(--fg));
+            border: 3px solid var(--fg);
+            border-radius: 24px;
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 15px var(--fg), 0 0 25px var(--accent);
+        }
+        .game-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--fg), 0 0 30px var(--accent);
+        }
+        .game-button h2 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--bg);
+            text-shadow: 0 0 5px var(--accent);
+        }
+        .feedback {
+            font-size: 16px;
+            margin: 20px 0;
+            color: var(--danger);
+            min-height: 24px;
+        }
+        .score, .lives {
+            font-size: 20px;
+            color: var(--fg);
+            margin: 10px 0;
+        }
+        .back-button {
+            background: linear-gradient(45deg, var(--accent), var(--fg));
+            border: 3px solid var(--fg);
+            border-radius: 24px;
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 15px var(--fg), 0 0 25px var(--accent);
+            margin: 30px auto;
+            max-width: 300px;
+        }
+        .back-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--fg), 0 0 30px var(--accent);
+        }
+        .back-button h2 {
+            margin: 0;
+            font-size: 20px;
+            color: var(--bg);
+            text-shadow: 0 0 5px var(--accent);
+        }
+        .ads-container {
+            margin: 20px auto;
+            min-height: 90px;
+        }
+        footer {
+            margin-top: 30px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+    </style>
 </head>
 <body>
-<h1>Bible or Not?</h1>
+    <h1>Bible or Not?</h1>
 
-<div class="game-container">
-    <div class="score">Score: <span id="score">0</span> | Lives: <span id="lives">3</span></div>
-    <div class="quote" id="quote"></div>
-    <div class="buttons">
-        <div class="game-button" onclick="checkAnswer(true)"><h2>Bible</h2></div>
-        <div class="game-button" onclick="checkAnswer(false)"><h2>Not Bible</h2></div>
+    <div class="game-container">
+        <div class="score">Score: <span id="score">0</span></div>
+        <div class="lives">Lives: <span id="lives">3</span></div>
+        <div class="quote" id="quote"></div>
+        <div class="buttons">
+            <div class="game-button" onclick="checkAnswer(true)">
+                <h2>Bible</h2>
+            </div>
+            <div class="game-button" onclick="checkAnswer(false)">
+                <h2>Not Bible</h2>
+            </div>
+        </div>
+        <div class="feedback" id="feedback"></div>
     </div>
-    <div class="feedback" id="feedback"></div>
-</div>
 
-<div class="ads-container">
-    <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-7172412535146248" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-</div>
+    <!-- AdSense placeholder -->
+    <div class="ads-container">
+        <ins class="adsbygoogle"
+             style="display:block;"
+             data-ad-client="ca-pub-7172412535146248"
+             data-ad-slot="1234567890"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 
-<div class="back-button" onclick="window.location.href='index.html'"><h2>Back to Games</h2></div>
-<footer>Dominion Games</footer>
+    <div class="back-button" onclick="window.location.href='index.html'">
+        <h2>Back to Games</h2>
+    </div>
 
-<script>
-const quotes = [
-    { text: "In the beginning God created the heavens and the earth.", isBible:true, source:"Genesis 1:1" },
-    { text: "The Lord is my shepherd; I shall not want.", isBible:true, source:"Psalm 23:1" },
-    { text: "Jesus wept.", isBible:true, source:"John 11:35" },
-    { text: "Love your neighbor as yourself.", isBible:true, source:"Mark 12:31" },
-    { text: "Blessed are the meek, for they shall inherit the earth.", isBible:true, source:"Matthew 5:5" },
-    { text: "Do or do not, there is no try.", isBible:false, source:"Star Wars" },
-    { text: "To be or not to be, that is the question.", isBible:false, source:"Shakespeare, Hamlet" },
-    { text: "All the world's a stage, and all the men and women merely players.", isBible:false, source:"Shakespeare" },
-    { text: "God helps those who help themselves.", isBible:false, source:"Benjamin Franklin" },
-    { text: "The Force will be with you, always.", isBible:false, source:"Star Wars" }
-    // ...add more quotes up to 150 here...
-];
+    <footer>Dominion Games</footer>
 
-let score = 0;
-let lives = 3;
-let currentQuoteIndex = 0;
+    <script>
+        const quotes = [
+            { text: "For God so loved the world that he gave his one and only Son.", isBible: true, source: "John 3:16" },
+            { text: "To be or not to be, that is the question.", isBible: false, source: "Shakespeare, Hamlet" },
+            { text: "The Lord is my shepherd; I shall not want.", isBible: true, source: "Psalm 23:1" },
+            { text: "All the world's a stage, and all the men and women merely players.", isBible: false, source: "Shakespeare, As You Like It" },
+            { text: "Love your neighbor as yourself.", isBible: true, source: "Mark 12:31" },
+            { text: "It is better to have loved and lost than never to have loved at all.", isBible: false, source: "Tennyson, In Memoriam A.H.H." }
+        ];
 
-// Shuffle quotes
-function shuffle(array){
-    for(let i=array.length-1;i>0;i--){
-        let j=Math.floor(Math.random()*(i+1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-shuffle(quotes);
+        let score = 0;
+        let lives = 3;
+        let currentQuoteIndex = 0;
 
-function displayQuote() {
-    const quoteElement = document.getElementById("quote");
-    const feedbackElement = document.getElementById("feedback");
-    const scoreElement = document.getElementById("score");
-    const livesElement = document.getElementById("lives");
-    quoteElement.textContent = quotes[currentQuoteIndex].text;
-    feedbackElement.textContent = "";
-    scoreElement.textContent = score;
-    livesElement.textContent = lives;
-    document.getElementById("score").textContent = score;
-    document.getElementById("lives").textContent = lives;
-}
+        function displayQuote() {
+            const quoteElement = document.getElementById("quote");
+            const feedbackElement = document.getElementById("feedback");
+            quoteElement.textContent = quotes[currentQuoteIndex].text;
+            feedbackElement.textContent = "";
+        }
 
-function checkAnswer(isBibleGuess){
-    const feedbackElement = document.getElementById("feedback");
-    const quoteElement = document.getElementById("quote");
-    const livesElement = document.getElementById("lives");
-    const correct = quotes[currentQuoteIndex].isBible === isBibleGuess;
+        function checkAnswer(isBibleGuess) {
+            const feedbackElement = document.getElementById("feedback");
+            const scoreElement = document.getElementById("score");
+            const livesElement = document.getElementById("lives");
+            const correct = quotes[currentQuoteIndex].isBible === isBibleGuess;
 
-    if(correct){
-        score += 10;
-        feedbackElement.textContent = `Correct! Source: ${quotes[currentQuoteIndex].source}`;
-        feedbackElement.style.color = "var(--fg)";
-    } else {
-        score = Math.max(0, score - 5);
-        lives--;
-        feedbackElement.textContent = `Incorrect! Source: ${quotes[currentQuoteIndex].source}`;
-        feedbackElement.style.color = "var(--danger)";
-    }
+            if (correct) {
+                score += 10;
+                feedbackElement.textContent = `Correct! Source: ${quotes[currentQuoteIndex].source}`;
+                feedbackElement.style.color = "var(--fg)";
+            } else {
+                lives--;
+                score -= 5;
+                feedbackElement.textContent = `Incorrect. Source: ${quotes[currentQuoteIndex].source}`;
+                feedbackElement.style.color = "var(--danger)";
+                if (lives <= 0) {
+                    feedbackElement.textContent = "Game Over!";
+                    feedbackElement.style.color = "var(--danger)";
+                    setTimeout(() => {
+                        alert("Game Over! Your final score is: " + score);
+                        location.reload(); // Reload the page to restart the game
+                    }, 1000);
+                    return;
+                }
+            }
 
-    document.getElementById("score").textContent = score;
-    livesElement.textContent = lives;
+            scoreElement.textContent = score;
+            livesElement.textContent = lives;
+            currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+            setTimeout(displayQuote, 1500); // Show next quote after 1.5 seconds
+        }
 
-    if(lives <= 0){
-        feedbackElement.textContent = `Game Over! Final Score: ${score}`;
-        quoteElement.textContent = "Game Over!";
-        // Add Restart Button
-        let restartButton = document.createElement("div");
-        restartButton.className = "back-button";
-        restartButton.style.marginTop = "20px";
-        restartButton.innerHTML = "<h2>Restart Game</h2>";
-        restartButton.onclick = () => {
-            score = 0;
-            lives = 3;
-            currentQuoteIndex = 0;
-            shuffle(quotes);
-            restartButton.remove();
-            displayQuote();
-        };
-        document.querySelector(".game-container").appendChild(restartButton);
-        return; // stop game
-    }
-
-    currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
-    setTimeout(displayQuote, 1500);
-}
-
-// Start the game
-displayQuote();
-</script>
+        // Initialize game
+        displayQuote();
+    </script>
 </body>
 </html>
