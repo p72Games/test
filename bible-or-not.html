@@ -1,218 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bible or Not? | Dominion Games Arcade</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bible or Not? | Dominion Games Arcade</title>
 
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248"
-         crossorigin="anonymous"></script>
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7172412535146248"
+     crossorigin="anonymous"></script>
 
-    <style>
-        :root {
-            --bg: #000;
-            --fg: #00ff88;
-            --accent: #00e5ff;
-            --danger: #ff3366;
-        }
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            margin: 0;
-            background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
-            color: var(--fg);
-            font-family: "Courier New", monospace;
-            text-align: center;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-        h1 {
-            font-size: clamp(28px, 6vw, 48px);
-            margin-bottom: 20px;
-            color: #a0fff2;
-            text-shadow: 0 0 10px var(--fg), 0 0 24px var(--accent);
-        }
-        .game-container {
-            max-width: 900px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 2px solid var(--accent);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 0 12px var(--accent);
-            margin: 20px auto;
-        }
-        .quote {
-            font-size: 18px;
-            line-height: 1.6;
-            color: var(--fg);
-            opacity: 0.9;
-            margin: 0 0 20px;
-            min-height: 60px;
-        }
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .game-button {
-            background: linear-gradient(45deg, var(--accent), var(--fg));
-            border: 3px solid var(--fg);
-            border-radius: 24px;
-            padding: 15px 30px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 0 15px var(--fg), 0 0 25px var(--accent);
-        }
-        .game-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px var(--fg), 0 0 30px var(--accent);
-        }
-        .game-button h2 {
-            margin: 0;
-            font-size: 18px;
-            color: var(--bg);
-            text-shadow: 0 0 5px var(--accent);
-        }
-        .feedback {
-            font-size: 16px;
-            margin: 20px 0;
-            color: var(--danger);
-            min-height: 24px;
-        }
-        .score, .lives {
-            font-size: 20px;
-            color: var(--fg);
-            margin: 10px 0;
-        }
-        .back-button {
-            background: linear-gradient(45deg, var(--accent), var(--fg));
-            border: 3px solid var(--fg);
-            border-radius: 24px;
-            padding: 15px 30px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 0 15px var(--fg), 0 0 25px var(--accent);
-            margin: 30px auto;
-            max-width: 300px;
-        }
-        .back-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px var(--fg), 0 0 30px var(--accent);
-        }
-        .back-button h2 {
-            margin: 0;
-            font-size: 20px;
-            color: var(--bg);
-            text-shadow: 0 0 5px var(--accent);
-        }
-        .ads-container {
-            margin: 20px auto;
-            min-height: 90px;
-        }
-        footer {
-            margin-top: 30px;
-            font-size: 14px;
-            opacity: 0.7;
-        }
-    </style>
+<style>
+:root {
+    --bg: #000;
+    --fg: #00ff88;
+    --accent: #00e5ff;
+    --danger: #ff3366;
+}
+* { box-sizing: border-box; }
+body {
+    margin:0;
+    background: radial-gradient(1200px 1200px at 50% 10%, #00121a 0%, #000 60%);
+    color: var(--fg);
+    font-family: "Courier New", monospace;
+    text-align:center;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:20px;
+}
+h1 {
+    font-size: clamp(28px, 6vw, 48px);
+    margin-bottom:20px;
+    color:#a0fff2;
+    text-shadow:0 0 10px var(--fg),0 0 24px var(--accent);
+}
+.game-container {
+    max-width: 900px;
+    background: rgba(0,0,0,0.6);
+    border:2px solid var(--accent);
+    border-radius:16px;
+    padding:30px;
+    box-shadow:0 0 12px var(--accent);
+    margin:20px auto;
+}
+.quote {
+    font-size:18px;
+    line-height:1.6;
+    color:var(--fg);
+    opacity:0.9;
+    margin:0 0 20px;
+    min-height:60px;
+}
+.buttons { display:flex; justify-content:center; gap:20px; }
+.game-button {
+    background: linear-gradient(45deg, var(--accent), var(--fg));
+    border:3px solid var(--fg);
+    border-radius:24px;
+    padding:15px 30px;
+    cursor:pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 15px var(--fg), 0 0 25px var(--accent);
+}
+.game-button:hover { transform:scale(1.05); box-shadow:0 0 20px var(--fg),0 0 30px var(--accent); }
+.game-button h2 { margin:0; font-size:18px; color:var(--bg); text-shadow:0 0 5px var(--accent); }
+.feedback { font-size:16px; margin:20px 0; color:var(--danger); min-height:24px; }
+.score, .lives { font-size:20px; color:var(--fg); margin:10px 0; }
+.back-button {
+    background: linear-gradient(45deg, var(--accent), var(--fg));
+    border:3px solid var(--fg);
+    border-radius:24px;
+    padding:15px 30px;
+    cursor:pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow:0 0 15px var(--fg),0 0 25px var(--accent);
+    margin:30px auto;
+    max-width:300px;
+}
+.back-button:hover { transform:scale(1.05); box-shadow:0 0 20px var(--fg),0 0 30px var(--accent); }
+.back-button h2 { margin:0; font-size:20px; color:var(--bg); text-shadow:0 0 5px var(--accent); }
+.ads-container { margin:20px auto; min-height:90px; }
+footer { margin-top:30px; font-size:14px; opacity:0.7; }
+</style>
 </head>
 <body>
-    <h1>Bible or Not?</h1>
+<h1>Bible or Not?</h1>
 
-    <div class="game-container">
-        <div class="score">Score: <span id="score">0</span></div>
-        <div class="lives">Lives: <span id="lives">3</span></div>
-        <div class="quote" id="quote"></div>
-        <div class="buttons">
-            <div class="game-button" onclick="checkAnswer(true)">
-                <h2>Bible</h2>
-            </div>
-            <div class="game-button" onclick="checkAnswer(false)">
-                <h2>Not Bible</h2>
-            </div>
-        </div>
-        <div class="feedback" id="feedback"></div>
+<div class="game-container">
+    <div class="score">Score: <span id="score">0</span></div>
+    <div class="lives">Lives: <span id="lives">3</span></div>
+    <div class="quote" id="quote"></div>
+    <div class="buttons">
+        <div class="game-button" onclick="checkAnswer(true)"><h2>Bible</h2></div>
+        <div class="game-button" onclick="checkAnswer(false)"><h2>Not Bible</h2></div>
     </div>
+    <div class="feedback" id="feedback"></div>
+</div>
 
-    <!-- AdSense placeholder -->
-    <div class="ads-container">
-        <ins class="adsbygoogle"
-             style="display:block;"
-             data-ad-client="ca-pub-7172412535146248"
-             data-ad-slot="1234567890"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
+<div class="ads-container">
+    <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-7172412535146248" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
 
-    <div class="back-button" onclick="window.location.href='index.html'">
-        <h2>Back to Games</h2>
-    </div>
+<div class="back-button" onclick="window.location.href='index.html'"><h2>Back to Games</h2></div>
+<footer>Dominion Games</footer>
 
-    <footer>Dominion Games</footer>
+<script>
+const quotes = [
+    // 75 Bible Quotes
+    {text:"In the beginning God created the heavens and the earth.", isBible:true, source:"Genesis 1:1"},
+    {text:"The Lord is my shepherd; I shall not want.", isBible:true, source:"Psalm 23:1"},
+    {text:"Jesus wept.", isBible:true, source:"John 11:35"},
+    {text:"Love your neighbor as yourself.", isBible:true, source:"Mark 12:31"},
+    {text:"Blessed are the meek, for they shall inherit the earth.", isBible:true, source:"Matthew 5:5"},
+    {text:"Man shall not live by bread alone.", isBible:true, source:"Matthew 4:4"},
+    {text:"Be strong and courageous. Do not be afraid.", isBible:true, source:"Joshua 1:9"},
+    {text:"The fear of the Lord is the beginning of wisdom.", isBible:true, source:"Proverbs 9:10"},
+    {text:"Let there be light.", isBible:true, source:"Genesis 1:3"},
+    {text:"Honor your father and your mother.", isBible:true, source:"Exodus 20:12"},
+    {text:"You shall not murder.", isBible:true, source:"Exodus 20:13"},
+    {text:"You shall not steal.", isBible:true, source:"Exodus 20:15"},
+    {text:"You shall not bear false witness.", isBible:true, source:"Exodus 20:16"},
+    {text:"You shall not covet.", isBible:true, source:"Exodus 20:17"},
+    {text:"If God is for us, who can be against us?", isBible:true, source:"Romans 8:31"},
+    {text:"Faith without works is dead.", isBible:true, source:"James 2:26"},
+    {text:"The joy of the Lord is your strength.", isBible:true, source:"Nehemiah 8:10"},
+    {text:"Cast all your anxiety on Him because He cares for you.", isBible:true, source:"1 Peter 5:7"},
+    {text:"The truth will set you free.", isBible:true, source:"John 8:32"},
+    {text:"I am the way, the truth, and the life.", isBible:true, source:"John 14:6"},
+    {text:"Be still, and know that I am God.", isBible:true, source:"Psalm 46:10"},
+    {text:"For God so loved the world that He gave His only Son.", isBible:true, source:"John 3:16"},
+    {text:"The Lord is my light and my salvation.", isBible:true, source:"Psalm 27:1"},
+    {text:"Trust in the Lord with all your heart.", isBible:true, source:"Proverbs 3:5"},
+    {text:"Your word is a lamp to my feet and a light to my path.", isBible:true, source:"Psalm 119:105"},
+    {text:"Ask and it will be given to you; seek and you will find.", isBible:true, source:"Matthew 7:7"},
+    {text:"The stone the builders rejected has become the cornerstone.", isBible:true, source:"Psalm 118:22"},
+    {text:"Our Father in heaven, hallowed be your name.", isBible:true, source:"Matthew 6:9"},
+    {text:"The Lord bless you and keep you; the Lord make his face shine on you.", isBible:true, source:"Numbers 6:24-25"},
+    {text:"I can do all things through Christ who strengthens me.", isBible:true, source:"Philippians 4:13"},
+    {text:"For we walk by faith, not by sight.", isBible:true, source:"2 Corinthians 5:7"},
+    {text:"The Lord is near to the brokenhearted and saves the crushed in spirit.", isBible:true, source:"Psalm 34:18"},
+    {text:"With God all things are possible.", isBible:true, source:"Matthew 19:26"},
+    {text:"Do not let your hearts be troubled. Trust in God; trust also in me.", isBible:true, source:"John 14:1"},
+    {text:"Forgive us our debts, as we also have forgiven our debtors.", isBible:true, source:"Matthew 6:12"},
+    {text:"The righteous shall live by faith.", isBible:true, source:"Romans 1:17"},
+    {text:"God is love.", isBible:true, source:"1 John 4:8"},
+    {text:"Greater love has no one than this: to lay down one’s life for one’s friends.", isBible:true, source:"John 15:13"},
+    {text:"The Lord is good to all; he has compassion on all he has made.", isBible:true, source:"Psalm 145:9"},
+    {text:"The Lord is gracious and compassionate, slow to anger and rich in love.", isBible:true, source:"Psalm 145:8"},
+    {text:"Blessed are the pure in heart, for they shall see God.", isBible:true, source:"Matthew 5:8"},
+    {text:"Blessed are the peacemakers, for they shall be called sons of God.", isBible:true, source:"Matthew 5:9"},
+    {text:"Blessed are those who hunger and thirst for righteousness, for they shall be satisfied.", isBible:true, source:"Matthew 5:6"},
+    {text:"The harvest is plentiful but the workers are few.", isBible:true, source:"Matthew 9:37"},
+    {text:"Seek first his kingdom and his righteousness.", isBible:true, source:"Matthew 6:33"},
+    {text:"Do not worry about tomorrow, for tomorrow will worry about itself.", isBible:true, source:"Matthew 6:34"},
+    {text:"Come to me, all you who are weary and burdened, and I will give you rest.", isBible:true, source:"Matthew 11:28"},
+    {text:"My grace is sufficient for you, for my power is made perfect in weakness.", isBible:true, source:"2 Corinthians 12:9"},
+    {text:"The Lord is my rock, my fortress, and my deliverer.", isBible:true, source:"Psalm 18:2"},
+    {text:"A little sleep, a little slumber, a little folding of the hands to rest—and poverty will come on you like a thief.", isBible:true, source:"Proverbs 6:10-11"},
+    {text:"Even the darkness will not be dark to you.", isBible:true, source:"Psalm 139:12"},
+    {text:"The heart is deceitful above all things, and desperately wicked.", isBible:true, source:"Jeremiah 17:9"},
+    {text:"Iron sharpens iron, so one person sharpens another.", isBible:true, source:"Proverbs 27:17"},
+    {text:"A cord of three strands is not quickly broken.", isBible:true, source:"Ecclesiastes 4:12"},
+    {text:"Do not muzzle an ox while it is treading out the grain.", isBible:true, source:"Deuteronomy 25:4"},
+    {text:"Do not cook a young goat in its mother’s milk.", isBible:true, source:"Exodus 23:19"},
+    {text:"Though I speak with the tongues of men and of angels, but have not love, I am only a resounding gong.", isBible:true, source:"1 Corinthians 13:1"},
+    {text:"The axe is already at the root of the trees.", isBible:true, source:"Matthew 3:10"},
 
-    <script>
-        const quotes = [
-            { text: "For God so loved the world that he gave his one and only Son.", isBible: true, source: "John 3:16" },
-            { text: "To be or not to be, that is the question.", isBible: false, source: "Shakespeare, Hamlet" },
-            { text: "The Lord is my shepherd; I shall not want.", isBible: true, source: "Psalm 23:1" },
-            { text: "All the world's a stage, and all the men and women merely players.", isBible: false, source: "Shakespeare, As You Like It" },
-            { text: "Love your neighbor as yourself.", isBible: true, source: "Mark 12:31" },
-            { text: "It is better to have loved and lost than never to have loved at all.", isBible: false, source: "Tennyson, In Memoriam A.H.H." }
-        ];
+    // 75 Non-Bible Quotes
+    {text:"God helps those who help themselves.", isBible:false, source:"Benjamin Franklin"},
+    {text:"Cleanliness is next to godliness.", isBible:false, source:"Proverbial"},
+    {text:"To thine own self be true.", isBible:false, source:"Shakespeare"},
+    {text:"The Force will be with you, always.", isBible:false, source:"Star Wars"},
+    {text:"Do or do not, there is no try.", isBible:false, source:"Yoda"},
+    {text:"One ring to rule them all, one ring to find them.", isBible:false, source:"J.R.R. Tolkien"},
+    {text:"The needs of the many outweigh the needs of the few.", isBible:false, source:"Spock"},
+    {text:"Winter is coming.", isBible:false, source:"Game of Thrones"},
+    {text:"Speak, friend, and enter.", isBible:false, source:"Lord of the Rings"},
+    {text:"Money is the root of all evil.", isBible:false, source:"Misquote"},
+    {text:"The lion shall lie down with the lamb.", isBible:false, source:"Misquote"},
+    {text:"Spare the rod, spoil the child.", isBible:false, source:"Misquote"},
+    {text:"Neither a borrower nor a lender be.", isBible:false, source:"Shakespeare"},
+    {text:"Fear leads to anger, anger leads to hate, hate leads to suffering.", isBible:false, source:"Yoda"},
+    {text:"Even the smallest person can change the course of the future.", isBible:false, source:"Tolkien"},
+    {text:"A wizard is never late, nor is he early. He arrives precisely when he means to.", isBible:false, source:"Tolkien"},
+    {text:"Hell hath no fury like a woman scorned.", isBible:false, source:"Shakespeare"},
+    {text:"All that glitters is not gold.", isBible:false, source:"Shakespeare"},
+    {text:"Elementary, my dear Watson.", isBible:false, source:"Holmes"},
+    {text:"Not all those who wander are lost.", isBible:false, source:"Tolkien"},
+    {text:"The cake is a lie.", isBible:false, source:"Portal"},
+    {text:"Live long and prosper.", isBible:false, source:"Star Trek"},
+    {text:"Houston, we have a problem.", isBible:false, source:"Apollo 13"},
+    {text:"Rome wasn’t built in a day.", isBible:false, source:"Proverbial"},
+    {text:"Curiosity killed the cat.", isBible:false, source:"Proverbial"},
+    {text:"Jack of all trades, master of none.", isBible:false, source:"Proverbial"},
+    {text:"When life gives you lemons, make lemonade.", isBible:false, source:"Proverbial"},
+    {text:"You miss 100% of the shots you don’t take.", isBible:false, source:"Wayne Gretzky"},
+    {text:"Keep calm and carry on.", isBible:false, source:"WWII Poster"},
+    {text:"A penny saved is a penny earned.", isBible:false, source:"Benjamin Franklin"},
+    {text:"All’s fair in love and war.", isBible:false, source:"Proverbial"},
+    {text:"There’s no place like home.", isBible:false, source:"Wizard of Oz"},
+    {text:"Beam me up, Scotty.", isBible:false, source:"Star Trek"},
+    {text:"I think, therefore I am.", isBible:false, source:"Descartes"},
+    {text:"Speak softly and carry a big stick.", isBible:false, source:"Theodore Roosevelt"},
+    {text:"The truth is out there.", isBible:false, source:"The X-Files"},
+    {text:"Why so serious?", isBible:false, source:"Joker, Batman"},
+    {text:"Hasta la vista, baby.", isBible:false, source:"Terminator"},
+    {text:"Life is like a box of chocolates; you never know what you’re gonna get.", isBible:false, source:"Forrest Gump"},
+    {text:"Just keep swimming.", isBible:false, source:"Finding Nemo"},
+    {text:"Bond. James Bond.", isBible:false, source:"James Bond"},
+    {text:"Carpe diem. Seize the day.", isBible:false, source:"Dead Poets Society"},
+    {text:"To infinity and beyond!", isBible:false, source:"Toy Story"},
+    {text:"Yippee-ki-yay!", isBible:false, source:"Die Hard"},
+    {text:"I’ll be back.", isBible:false, source:"Terminator"},
+    {text:"Frankly, my dear, I don’t give a damn.", isBible:false, source:"Gone with the Wind"},
+    {text:"You talking to me?", isBible:false, source:"Taxi Driver"},
+    {text:"Here’s looking at you, kid.", isBible:false, source:"Casablanca"},
+    {text:"Knowledge is power.", isBible:false, source:"Francis Bacon"},
+    {text:"The unexamined life is not worth living.", isBible:false, source:"Socrates"},
+    {text:"Give me liberty or give me death!", isBible:false, source:"Patrick Henry"},
+    {text:"The only thing we have to fear is fear itself.", isBible:false, source:"F. D. Roosevelt"},
+    {text:"That which does not kill us makes us stronger.", isBible:false, source:"Nietzsche"},
+    {text:"All men are created equal.", isBible:false, source:"Declaration of Independence"},
+    {text:"Time heals all wounds.", isBible:false, source:"Proverbial"},
+    {text:"History repeats itself.", isBible:false, source:"Proverbial"},
+    {text:"The ends justify the means.", isBible:false, source:"Machiavelli"},
+    {text:"Power tends to corrupt, and absolute power corrupts absolutely.", isBible:false, source:"Lord Acton"},
+    {text:"This too shall pass.", isBible:false, source:"Proverbial"},
+    {text:"Charity begins at home.", isBible:false, source:"Proverbial"},
+    {text:"Better to remain silent and be thought a fool than to speak and remove all doubt.", isBible:false, source:"Proverbial"},
+    {text:"The road to hell is paved with good intentions.", isBible:false, source:"Proverbial"},
+    {text:"No pain, no gain.", isBible:false, source:"Proverbial"},
+    {text:"Blood is thicker than water.", isBible:false, source:"Proverbial"},
+    {text:"The pen is mightier than the sword.", isBible:false, source:"Proverbial"}
+];
 
-        let score = 0;
-        let lives = 3;
-        let currentQuoteIndex = 0;
+// Shuffle quotes to randomize
+function shuffle(array){for(let i=array.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}}
 
-        function displayQuote() {
-            const quoteElement = document.getElementById("quote");
-            const feedbackElement = document.getElementById("feedback");
-            quoteElement.textContent = quotes[currentQuoteIndex].text;
-            feedbackElement.textContent = "";
+shuffle(quotes);
+
+let score = 0;
+let lives = 3;
+let currentQuoteIndex = 0;
+
+function displayQuote() {
+    const quoteElement = document.getElementById("quote");
+    const feedbackElement = document.getElementById("feedback");
+    quoteElement.textContent = quotes[currentQuoteIndex].text;
+    feedbackElement.textContent = "";
+}
+
+function checkAnswer(isBibleGuess) {
+    const feedbackElement = document.getElementById("feedback");
+    const scoreElement = document.getElementById("score");
+    const livesElement = document.getElementById("lives");
+    const correct = quotes[currentQuoteIndex].isBible === isBibleGuess;
+
+    if(correct){
+        score += 10;
+        feedbackElement.textContent = `Correct! Source: ${quotes[currentQuoteIndex].source}`;
+        feedbackElement.style.color = "var(--fg)";
+    } else {
+        lives--;
+        score -= 5;
+        feedbackElement.textContent = `Incorrect. Source: ${quotes[currentQuoteIndex].source}`;
+        feedbackElement.style.color = "var(--danger)";
+        if(lives <=0){
+            feedbackElement.textContent = "Game Over!";
+            setTimeout(()=>{alert(`Game Over! Your final score is: ${score}`); location.reload();}, 1000);
+            return;
         }
+    }
 
-        function checkAnswer(isBibleGuess) {
-            const feedbackElement = document.getElementById("feedback");
-            const scoreElement = document.getElementById("score");
-            const livesElement = document.getElementById("lives");
-            const correct = quotes[currentQuoteIndex].isBible === isBibleGuess;
+    scoreElement.textContent = score;
+    livesElement.textContent = lives;
+    currentQuoteIndex = (currentQuoteIndex +1) % quotes.length;
+    setTimeout(displayQuote, 1500);
+}
 
-            if (correct) {
-                score += 10;
-                feedbackElement.textContent = `Correct! Source: ${quotes[currentQuoteIndex].source}`;
-                feedbackElement.style.color = "var(--fg)";
-            } else {
-                lives--;
-                score -= 5;
-                feedbackElement.textContent = `Incorrect. Source: ${quotes[currentQuoteIndex].source}`;
-                feedbackElement.style.color = "var(--danger)";
-                if (lives <= 0) {
-                    feedbackElement.textContent = "Game Over!";
-                    feedbackElement.style.color = "var(--danger)";
-                    setTimeout(() => {
-                        alert("Game Over! Your final score is: " + score);
-                        location.reload(); // Reload the page to restart the game
-                    }, 1000);
-                    return;
-                }
-            }
-
-            scoreElement.textContent = score;
-            livesElement.textContent = lives;
-            currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
-            setTimeout(displayQuote, 1500); // Show next quote after 1.5 seconds
-        }
-
-        // Initialize game
-        displayQuote();
-    </script>
+displayQuote();
+</script>
 </body>
 </html>
